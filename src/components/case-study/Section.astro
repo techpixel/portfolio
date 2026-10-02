@@ -5,9 +5,11 @@ interface Props {
 }
 
 const { heading } = Astro.props;
+// An anchor for the table of contents, e.g. "Problem" → #problem.
+const id = heading?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 ---
 
-<section class="cs-section">
+<section class="cs-section" id={id}>
 	<h2 class="cs-heading">{heading}<slot name="heading" /></h2>
 	<slot />
 </section>

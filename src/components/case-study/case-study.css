@@ -106,6 +106,9 @@
 	font-size: 18px;
 	line-height: 1.4;
 }
+.cs-meta dd .cs-link {
+	color: var(--cs-cream);
+}
 .cs-meta dt + dd {
 	margin-top: 8px;
 }
@@ -120,6 +123,7 @@
 }
 
 .cs-section {
+	scroll-margin-top: 32px;
 	display: flex;
 	flex-direction: column;
 	gap: 48px;
@@ -370,5 +374,12 @@
 	}
 	.cs-heading + .cs-brand {
 		margin-top: -16px;
+	}
+}
+
+/* Contents links scroll rather than jump, unless motion is reduced. */
+@media (prefers-reduced-motion: no-preference) {
+	html:has(.cs-page) {
+		scroll-behavior: smooth;
 	}
 }

@@ -20,6 +20,13 @@ interface Props {
 
 const { title, tagline, accent, links, hero, heroAlt, meta, fonts } = Astro.props;
 const heroBlur = await placeholder(hero);
+
+// The table of contents is read off the rendered sections, so pages don't list their
+// headings twice.
+const body = await Astro.slots.render('default');
+const contents = [...body.matchAll(/<section class="cs-section"[^>]*\bid="([^"]+)"[^>]*>\s*<h2 class="cs-heading"[^>]*>([\s\S]*?)<\/h2>/g)].map(
+	([, id, html]) => ({ id, label: html.replace(/<[^>]+>/g, '').trim() }),
+);
 ---
 
 <Layout>
@@ -77,10 +84,24 @@ const heroBlur = await placeholder(hero);
 					</div>
 				))
 			}
+			{
+				contents.length > 1 && (
+					<div role="navigation" aria-label="Contents">
+						<dt>Contents</dt>
+						{contents.map((item) => (
+							<dd>
+								<a href={`#${item.id}`} class="cs-link">
+									{item.label}
+								</a>
+							</dd>
+						))}
+					</div>
+				)
+			}
 		</dl>
 
 		<article class="cs-article cs-indent">
-			<slot />
+			<Fragment set:html={body} />
 		</article>
 
 		<footer class="cs-indent mt-24">
