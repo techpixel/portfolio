@@ -198,16 +198,14 @@
 	color: var(--cs-grey);
 }
 
-/* Emphasis, three levels, by weight, size and tone rather than a brighter colour
-   (white barely separates from cream). Strong lifts a few words; a pull line stands
-   on its own for a story's turning points; quiet sets asides and housekeeping back. */
+/* Emphasis by tone rather than a brighter colour (white barely separates from
+   cream). Strong reads as body text; a pull line stands on its own for a story's
+   turning points; quiet sets asides and housekeeping back. */
 .cs-prose strong {
-	font-weight: 600;
+	font-weight: inherit;
 }
 .cs-prose .cs-pull {
-	font-size: 24px;
 	font-style: italic;
-	line-height: 1.35;
 }
 .cs-prose * + .cs-pull,
 .cs-prose .cs-pull + * {
@@ -370,9 +368,6 @@
 	}
 	.cs-prose {
 		font-size: 16px;
-	}
-	.cs-prose .cs-pull {
-		font-size: 20px;
 	}
 	.cs-prose .cs-quiet {
 		font-size: 14px;
