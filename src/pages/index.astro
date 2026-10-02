@@ -3,12 +3,13 @@ import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Portfolio from '../components/Portfolio.svelte';
 import { projects } from '../data/work';
+import { placeholder } from '../lib/placeholder';
 
-import portrait from '../assets/portrait.png';
-import midnightPreview from '../assets/work/midnight-preview.png';
-import horizonsPreview from '../assets/work/horizons-preview.png';
-import manifestoPreview from '../assets/work/manifesto-preview.png';
-import horizonsFerret from '../assets/work/horizons-ferret.png';
+import portrait from '../assets/portrait.webp';
+import midnightPreview from '../assets/work/midnight-preview.webp';
+import horizonsPreview from '../assets/work/horizons/hero.webp';
+import manifestoPreview from '../assets/work/manifesto/hero.webp';
+import horizonsFerret from '../assets/work/horizons-ferret.webp';
 
 const previewOptions = { width: 1450, format: 'webp' } as const;
 
@@ -22,9 +23,9 @@ const [portraitImg, midnightImg, horizonsImg, manifestoImg, ferretImg] =
 	]);
 
 const previews = {
-	midnight: midnightImg.src,
-	horizons: horizonsImg.src,
-	manifesto: manifestoImg.src,
+	midnight: { src: midnightImg.src, style: await placeholder(midnightPreview) },
+	horizons: { src: horizonsImg.src, style: await placeholder(horizonsPreview) },
+	manifesto: { src: manifestoImg.src, style: await placeholder(manifestoPreview) },
 };
 ---
 

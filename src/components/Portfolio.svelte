@@ -5,7 +5,7 @@
 
 	interface Props {
 		projects: Project[];
-		previews: Record<Slug, string>;
+		previews: Record<Slug, { src: string; style?: string }>;
 		portrait: string;
 		horizonsFerret: string;
 	}
@@ -38,10 +38,12 @@
 
 		{#each projects as project (project.slug)}
 			<img
-				src={previews[project.slug]}
+				src={previews[project.slug].src}
+				style={previews[project.slug].style}
 				alt="{project.name} preview"
 				width="725"
 				height="438"
+				fetchpriority="low"
 				class="mt-[3px] aspect-[725/438] w-full object-cover {layer} {visibility(active === project.slug)}"
 			/>
 		{/each}
