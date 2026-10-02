@@ -1,13 +1,22 @@
 ---
+import { getImage } from 'astro:assets';
 import '../styles/global.css';
 import { Retune } from 'retune';
+import { metaImage, pageMeta, site } from '../lib/meta';
 
-interface Props {
-	title: string;
-	description?: string;
-}
+// Titles, descriptions and social previews come from src/data/meta.json, by URL. The
+// 404 page renders at whatever URL was missing, so it's looked up by its route instead.
+const page = pageMeta(Astro.routePattern === '/404' ? '/404' : Astro.url.pathname);
+const { title, description, imageAlt, type = 'website', noindex } = page;
 
-const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const image = page.image ? metaImage(page.image) : undefined;
+const preview = image
+	? await getImage({ src: image, width: Math.min(1200, image.width), format: 'jpg', quality: 80 })
+	: undefined;
+const previewUrl = preview && new URL(preview.src, Astro.site).href;
+// Wide images get the large card; square ones (a portrait) the small one.
+const wide = image ? image.width / image.height > 1.3 : false;
 ---
 
 <html lang="en">
@@ -17,8 +26,33 @@ const { title, description } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		{description && <meta name="description" content={description} />}
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<meta name="theme-color" content={site.themeColor} />
+		{noindex && <meta name="robots" content="noindex" />}
+
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:locale" content={site.locale} />
+		{
+			preview && (
+				<>
+					<meta property="og:image" content={previewUrl} />
+					<meta property="og:image:width" content={String(preview.attributes.width)} />
+					<meta property="og:image:height" content={String(preview.attributes.height)} />
+					{imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+				</>
+			)
+		}
+		<meta name="twitter:card" content={wide ? 'summary_large_image' : 'summary'} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{previewUrl && <meta name="twitter:image" content={previewUrl} />}
+		{previewUrl && imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
