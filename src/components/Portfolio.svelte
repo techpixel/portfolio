@@ -49,7 +49,7 @@
 		{/each}
 	</div>
 
-	<section class="mt-12 md:mt-6">
+	<section class="mt-12 md:mt-2">
 		<h2 class="mb-4 font-display text-4xl leading-[normal] font-bold">Selected Work</h2>
 		<ul class="flex flex-col gap-2" onmouseleave={deactivate}>
 			{#each projects as project (project.slug)}
@@ -63,5 +63,13 @@
 				/>
 			{/each}
 		</ul>
+		<!-- Touch screens have no hover to hint at. -->
+		<p
+			class="mt-2 text-sm leading-none text-peach transition-[opacity,visibility] duration-150 [@media(hover:none)]:hidden {visibility(
+				active === null
+			)}"
+		>
+			Hover to view
+		</p>
 	</section>
 </main>
