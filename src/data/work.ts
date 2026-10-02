@@ -13,21 +13,21 @@ export const projects: Project[] = [
 	{
 		slug: 'midnight',
 		name: 'Midnight',
-		description: 'making murder fun',
+		description: 'a hacakthon in vienna',
 		tags: ['branding', 'ui/ux design'],
 		accent: { bar: 'bg-midnight', text: 'text-cream', tag: 'bg-cream text-midnight' },
 	},
 	{
 		slug: 'horizons',
 		name: 'Horizons',
-		description: 'an identity with many identities',
+		description: '6 hackathons across the world',
 		tags: ['branding', 'ui/ux design'],
 		accent: { bar: 'bg-horizons', text: 'text-black', tag: 'bg-black text-horizons' },
 	},
 	{
 		slug: 'manifesto',
 		name: 'Manifesto',
-		description: '2 days to tell 20 stories to 2000 people.',
+		description: 'the hack club gap year application',
 		tags: ['storytelling', 'web design'],
 		accent: {
 			bar: 'border-4 border-manifesto bg-black',

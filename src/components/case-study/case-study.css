@@ -143,27 +143,6 @@
 	margin-top: -24px;
 }
 
-/* ---- Contents ----------------------------------------------------------- */
-
-/* Laid out like a section, a step smaller: it points at the sections, so it
-   shouldn't compete with them. */
-.cs-toc .cs-heading {
-	font-size: 24px;
-}
-.cs-toc ol {
-	padding-left: calc(var(--cs-step) + 1.5em);
-	list-style: decimal;
-	font-size: 16px;
-}
-.cs-toc li + li {
-	margin-top: 4px;
-}
-.cs-toc li::marker {
-	color: var(--cs-grey);
-	/* The face's default figures are tabular, which leaves "1 ." gappy. */
-	font-variant-numeric: proportional-nums;
-}
-
 /* ---- Body text ---------------------------------------------------------- */
 
 .cs-prose {
@@ -360,9 +339,6 @@
 	.cs-heading {
 		font-size: 24px;
 	}
-	.cs-toc .cs-heading {
-		font-size: 20px;
-	}
 	.cs-heading + * {
 		margin-top: -16px;
 	}
@@ -397,9 +373,3 @@
 	}
 }
 
-/* Contents links scroll rather than jump, unless motion is reduced. */
-@media (prefers-reduced-motion: no-preference) {
-	html:has(.cs-page) {
-		scroll-behavior: smooth;
-	}
-}

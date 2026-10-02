@@ -18,7 +18,9 @@ export interface PageMeta {
 	noindex?: boolean;
 }
 
-export const site = meta.site;
+/** Site-wide settings. `image` and `imageAlt` are the preview for pages without their own. */
+export const site: { name: string; url: string; locale: string; themeColor: string; image?: string; imageAlt?: string } =
+	meta.site;
 
 const pages: Record<string, PageMeta> = meta.pages as Record<string, PageMeta>;
 

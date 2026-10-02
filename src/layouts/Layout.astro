@@ -7,12 +7,20 @@ import { metaImage, pageMeta, site } from '../lib/meta';
 // Titles, descriptions and social previews come from src/data/meta.json, by URL. The
 // 404 page renders at whatever URL was missing, so it's looked up by its route instead.
 const page = pageMeta(Astro.routePattern === '/404' ? '/404' : Astro.url.pathname);
-const { title, description, imageAlt, type = 'website', noindex } = page;
+const { title, description, type = 'website', noindex } = page;
+const imageAlt = page.image ? page.imageAlt : site.imageAlt;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const image = page.image ? metaImage(page.image) : undefined;
+const imagePath = page.image ?? site.image;
+const image = imagePath ? metaImage(imagePath) : undefined;
+// Photos are re-encoded as 1200px JPEGs. PNGs are designed cards (the dithered og.png)
+// and pass through at full size, since resampling would smear their pixel detail.
 const preview = image
-	? await getImage({ src: image, width: Math.min(1200, image.width), format: 'jpg', quality: 80 })
+	? await getImage(
+			image.format === 'png'
+				? { src: image, width: image.width, format: 'png' }
+				: { src: image, width: Math.min(1200, image.width), format: 'jpg', quality: 80 },
+		)
 	: undefined;
 const previewUrl = preview && new URL(preview.src, Astro.site).href;
 // Wide images get the large card; square ones (a portrait) the small one.
