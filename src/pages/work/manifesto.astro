@@ -1,0 +1,247 @@
+---
+import CaseStudy from '../../components/case-study/CaseStudy.astro';
+import Section from '../../components/case-study/Section.astro';
+import Prose from '../../components/case-study/Prose.astro';
+import Gallery from '../../components/case-study/Gallery.astro';
+import Brand from '../../components/case-study/Brand.astro';
+import Glyseric from '../../assets/work/specimens/manifesto-glyseric.svg';
+
+import hero from '../../assets/work/manifesto/hero.png';
+import original from '../../assets/work/manifesto/original.png';
+import collage from '../../assets/work/manifesto/collage.png';
+import landing from '../../assets/work/manifesto/landing.png';
+import hackerManifesto from '../../assets/work/manifesto/hacker-manifesto.png';
+import hackerManifestoMobile from '../../assets/work/manifesto/hacker-manifesto-mobile.png';
+import hook from '../../assets/work/manifesto/hook.png';
+import footer from '../../assets/work/manifesto/footer.png';
+import manifestoPage from '../../assets/work/manifesto/manifesto-page.png';
+import manifestoPage2 from '../../assets/work/manifesto/manifesto-page-2.png';
+import manifestoPage3 from '../../assets/work/manifesto/manifesto-page-3.png';
+import solemn1 from '../../assets/work/manifesto/solemn-1.png';
+import solemn2 from '../../assets/work/manifesto/solemn-2.png';
+import solemn3 from '../../assets/work/manifesto/solemn-3.png';
+import note1 from '../../assets/work/manifesto/note-1.png';
+import note2 from '../../assets/work/manifesto/note-2.png';
+import note3 from '../../assets/work/manifesto/note-3.png';
+---
+
+<CaseStudy
+	title="Hack Club’s Manifesto"
+	tagline="2 days to tell 20 stories to 2000 people."
+	accent="#ec5750"
+	links={[{ label: 'Website', href: 'https://manifesto.hackclub.com' }, { label: 'Github', href: 'https://github.com/hackclub/manifesto' }]}
+	hero={hero}
+	heroAlt="The Manifesto landing page: a collage of gap year photos beside “hackers wanted.”"
+	meta={[
+		{ label: 'Role', value: ['Sole Designer & Web Developer'] },
+		{ label: 'Shipped', value: ['March 2026'] },
+	]}
+	fonts="family=Young+Serif"
+>
+	<Section heading="2 days.">
+		<Prose>
+			<p>
+				My manager DM’ed one day and asked me for design advice. He was working on the hiring page.
+				<strong>It was not good.</strong>
+			</p>
+		</Prose>
+		<Gallery
+			size="column"
+			rows={[[{ src: original, alt: 'A plain, article-style draft of the hiring page' }]]}
+			caption="I don’t have the screenshot of the original design, but it it was very similar to a Medium article in terms of format."
+		/>
+		<Prose>
+			<p>
+				I told him that I didn’t think anyone would apply. It felt like a blank page with a blob of
+				text, and not something that would resonate with people. Would people understand that this
+				wasn’t a traditional experience? That this could be impactful?
+			</p>
+			<p>
+				After pointing my grievances with the design, he realized a lot more was needed. I told him
+				I had an inkling of a vision, and I could take a crack at designing it.
+			</p>
+			<p class="cs-pull">He told me that I had 2 days.</p>
+		</Prose>
+	</Section>
+
+	<Section heading="20 stories.">
+		<Prose>
+			<p>
+				The Hack Club Gap Year program is an experience that I have a lot of trouble describing in
+				words. I also just didn’t have the time to figure out the best way to communicate it.
+			</p>
+			<p>This is what prompted the direction of a photo collage.</p>
+		</Prose>
+		<Gallery
+			caption="This collage is a sampling of my albums, the albums of my co-workers and friends, and the shared company album with photos from events that we were responsible for."
+			rows={[[{ src: collage, alt: 'A collage of photos from the gap year', aspect: 2780 / 1788 }]]}
+		/>
+		<Prose>
+			<p>
+				These are snapshots in different moments all 20 of us went through in our year. <strong>This is how we would remember our year.</strong> (I teared up a bit when sifting through our photos.)
+			</p>
+			<p>
+				It’s disjointed and incoherent, but I think it adds to the message. The work we do has
+				unexpected results and leads to interesting journeys. It’s for everyone, and you can be
+				ready to expect anything.
+			</p>
+			<p class="cs-quiet">It also serves very well in juxtaposing a lot of the more serious messaging, i.e. the hacker manifesto.</p>
+		</Prose>
+		<Gallery
+			caption="The collage served the foundation for the landing."
+			rows={[[{ src: landing, alt: 'The Manifesto landing page with the photo collage and “hackers wanted.”' }]]}
+		/>
+	</Section>
+
+	<Section heading="A manifesto.">
+		<Prose>
+			<p>
+				I covered the emotional component of Hack Club Gap Year program, but I had yet to include
+				the philosophy.
+			</p>
+			<p>We have a previous work, called the Hacker Manifesto, which contained this philosophy.</p>
+		</Prose>
+		<Gallery
+			rows={[
+				[
+					{ src: hackerManifesto, alt: 'The original Hacker Manifesto page' },
+					{ src: hackerManifestoMobile, alt: 'The Hacker Manifesto on a phone' },
+				],
+			]}
+		/>
+		<Prose>
+			<p class="cs-quiet">The original version of the site my manager came up with consisted of just this philosophy.</p>
+			<p>
+				I wanted to hone on this philosophy, especially the start, which sums up our philosophy at
+				Hack Club.
+			</p>
+		</Prose>
+		<Gallery
+			caption="The first few lines I used as a hook."
+			rows={[[{ src: hook, alt: 'The opening lines of the manifesto used as a hook', aspect: 2780 / 1788 }]]}
+		/>
+		<Gallery
+			caption="The last line in the manifesto, I used as the footer. It felt like a strong call to action." rows={[[{ src: footer, alt: 'The footer: “Hackers Wanted.”' }]]} />
+		<Prose>
+			<p>
+				The original plan was to have the manifesto front and center, but after revisions and
+				working it through my manager, we decided that a more detailed job overview would be better
+				for our main page.
+			</p>
+			<p>So I made the manifesto its own page.</p>
+		</Prose>
+		<Gallery
+			rows={[
+				[{ src: manifestoPage, alt: 'The standalone manifesto page' }],
+				[
+					{ src: manifestoPage2, alt: 'A later section of the manifesto page' },
+					{ src: manifestoPage3, alt: 'The end of the manifesto page' },
+				],
+			]}
+		/>
+	</Section>
+
+	<Section heading="Warm solemnity.">
+		<Prose>
+			<p>
+				I wanted the feel of the manifesto site to be serious. The Hack Club Gap Year program should
+				be something taken seriously, even in all the whimsy.
+			</p>
+		</Prose>
+		<Brand
+			palettes={[
+				{
+					title: 'Primary Colors',
+					colors: [
+						{ name: 'Hack Club Red', hex: '#EC5750' },
+						{ name: 'I Remember Black', hex: '#1C1C1A', outlined: true },
+						{ name: 'Impure White', hex: '#EEEEEE' },
+					],
+				},
+			]}
+			specimenColor="#ffffff"
+			type={[
+				{ role: 'Headings', family: 'Young Serif', text: 'Young Serif', size: 32 },
+				{ role: 'Subheadings & Paragraph', svg: Glyseric, label: 'Glyseric' },
+			]}
+		/>
+		<Prose>
+			<p>
+				I sought a serif that didn’t feel too rigid. I wanted to avoid something that felt too
+				impressing on a person. The slight funk and curves of Young Serif and Glyseric nailed a
+				<strong>balance between seriousness and friendliness</strong>.
+			</p>
+			<p>The imperfect colors also added to lessening the rigidity and seriousness of the application.</p>
+		</Prose>
+		<Gallery
+			caption="The collage layout stayed a consistent motif in certain elements, bringing uniformity."
+			size="column"
+			rows={[
+				[{ src: solemn1, alt: 'A full-bleed manifesto section in Young Serif' }],
+				[{ src: solemn2, alt: 'A heavy, large-scale section of the site', aspect: 351.5 / 265.5 }],
+				[
+					{
+						src: solemn3,
+						alt: 'The collage motif reused in a later section',
+						aspect: 342.12 / 215.28,
+						crop: { width: 100, height: 120.04, left: 0.04, top: -0.14 },
+					},
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				Elements on these pages are large and feel heavy when scrolling. The scale doesn’t feel
+				overwhelming with the layout, and the heaviness forces the reader to immerse and view
+				specific content pieces, rather than skimming through. It also conveys impact.
+			</p>
+		</Prose>
+	</Section>
+
+	<Section heading="2000 people.">
+		<Prose>
+			<p>
+				After the 48 hour deadline was up, I found the end result to be satisfying, despite not being
+				perfect. <strong>I’m very proud of the manifesto.</strong> It is not my best work, but for the
+				short time frame, I made the best choices I thought I could.
+			</p>
+			<p class="cs-pull">Designing the Manifesto was an emotional exploration for me.</p>
+			<p>
+				I viewed my gap year as a rich engagement with both my life and philosophy, and I wanted to
+				communicate that to prospective applicants.
+			</p>
+			<p>
+				Many people have reached out to me saying how much they appreciate the effort I put into it.
+				One of my coworkers made{' '}
+				<a href="https://journal.tongyu.fish/gapyear/">a nice little blog</a> inspired by the
+				manifesto site.
+			</p>
+			<p class="cs-quiet">
+				However, in the future for short term and rapidly changing work, I need to be ready to build
+				flexibility. The collages did not handle well when content changed, and it led to some places
+				having awkward spacing.
+			</p>
+			<p>
+				As a fun but caring aside, I hid a{' '}
+				<a href="https://manifesto.hackclub.com/a-designers-note">small hidden note</a> in the site an
+				hour after it launched.
+			</p>
+		</Prose>
+		<Gallery
+			caption="My manager later asked me to make a section with both me & my coworker’s writings. Making a notes own section made both of our work more visible, and a lot more people read it."
+			rows={[
+				[
+					{ src: note1, alt: 'The hidden designer’s note on a phone' },
+					{ src: note2, alt: 'The notes section with both writings' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I had a couple people reach out to me and say <strong>how it much it meant to them</strong>. It was really
+				sweet, and I’m grateful that my words had an impact on them.
+			</p>
+		</Prose>
+		<Gallery rows={[[{ src: note3, alt: 'A message from someone who read the note' }]]} />
+	</Section>
+</CaseStudy>

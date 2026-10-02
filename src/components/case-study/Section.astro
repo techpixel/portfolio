@@ -1,0 +1,13 @@
+---
+interface Props {
+	/** Plain heading text. Use the `heading` slot instead for inline markup. */
+	heading?: string;
+}
+
+const { heading } = Astro.props;
+---
+
+<section class="cs-section">
+	<h2 class="cs-heading">{heading}<slot name="heading" /></h2>
+	<slot />
+</section>

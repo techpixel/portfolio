@@ -1,0 +1,191 @@
+---
+import CaseStudy from '../../components/case-study/CaseStudy.astro';
+import Section from '../../components/case-study/Section.astro';
+import Prose from '../../components/case-study/Prose.astro';
+import Gallery from '../../components/case-study/Gallery.astro';
+import Brand from '../../components/case-study/Brand.astro';
+import Moga from '../../assets/work/specimens/midnight-moga.svg';
+
+import hero from '../../assets/work/midnight/hero.png';
+import explore1 from '../../assets/work/midnight/explore-1.png';
+import explore2 from '../../assets/work/midnight/explore-2.png';
+import explore3 from '../../assets/work/midnight/explore-3.png';
+import explore4 from '../../assets/work/midnight/explore-4.png';
+import explore5 from '../../assets/work/midnight/explore-5.png';
+import flat1 from '../../assets/work/midnight/flat-1.png';
+import flat2 from '../../assets/work/midnight/flat-2.png';
+import flat3 from '../../assets/work/midnight/flat-3.png';
+import pages1 from '../../assets/work/midnight/pages-1.png';
+import pages2 from '../../assets/work/midnight/pages-2.png';
+import pages3 from '../../assets/work/midnight/pages-3.png';
+import platform1 from '../../assets/work/midnight/platform-1.png';
+import platform2 from '../../assets/work/midnight/platform-2.png';
+import logo from '../../assets/work/midnight/logo.png';
+import event1 from '../../assets/work/midnight/event-1.png';
+import event2 from '../../assets/work/midnight/event-2.png';
+---
+
+<CaseStudy
+	title="Hack Club’s Midnight"
+	tagline="Making murder look appealing."
+	accent="#f24b4b"
+	links={[{ label: 'Website', href: 'https://midnight.hackclub.com' }, { label: 'Github', href: 'https://github.com/hackclub/midnight' }]}
+	hero={hero}
+	heroAlt="The Midnight landing page beside its logo and a printed booklet"
+	meta={[
+		{ label: 'Role', value: ['Designer', 'Web Developer'] },
+		{ label: 'Collaborators', value: ['Organizing Team', 'Infrastructure/Backend Developer', 'Artist'] },
+		{ label: 'Shipped', value: ['October 2025', '(Concluded January 2026)'] },
+	]}
+	fonts="family=PT+Sans&family=PT+Serif"
+>
+	<Section>
+		<Fragment slot="heading"><b>Bolder</b> is <b>better</b>, right?</Fragment>
+		<Prose>
+			<p>
+				Midnight was a flagship destination hackathon for high school students located in Vienna,
+				Austria. When I was brought onto the project, the team was figuring out how to make this
+				hackathon and its theming more appealing to teenagers.
+			</p>
+			<h3>Problems</h3>
+			<ul>
+				<li>
+					Originally, the theming was “from the 90s”. Not only was it cliche, it had no relevance to
+					a typical teenager.
+				</li>
+				<li>
+					Theming needed to feel big (dare I say bold?) if we wanted to convince teenagers that it
+					was worth the time and effort to fly all the way around the world.
+				</li>
+			</ul>
+			<p>
+				We changed the theme to <strong>“murder mystery”</strong>. It was in line with the atmosphere we perceived in
+				Vienna, especially the gothic architecture and historic, moodier atmosphere.
+			</p>
+		</Prose>
+	</Section>
+
+	<Section heading="Making murder appealing">
+		<Gallery
+			rows={[
+				[
+					{ src: explore1, alt: 'Early Midnight wordmark explorations', aspect: 227 / 217 },
+					{ src: explore2, alt: 'A sealed envelope with a Midnight wax stamp', aspect: 403 / 217 },
+					{ src: explore3, alt: 'A dark, gothic Midnight letter concept', aspect: 305 / 217 },
+				],
+				[
+					{ src: explore4, alt: 'A dim, horror-leaning landing page concept' },
+					{ src: explore5, alt: 'A second horror-leaning landing page concept' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				My initial exploration and vibes ended up becoming more murder-y than we anticipated. My
+				team pointed out that it leaned <strong>too much into the horror and fear elements</strong>, and they felt
+				like it might turn away parents and some teenagers.
+			</p>
+		</Prose>
+		<Gallery
+			rows={[
+				[
+					{ src: flat1, alt: 'Flat, board-game-inspired Midnight landing concept' },
+					{ src: flat2, alt: 'A second flat Midnight concept with the castle skyline' },
+					{ src: flat3, alt: 'A third flat Midnight concept' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I developed flatter look, inspired by board games like Clue and the covers of Knives Out
+				and the Orient Express, Me and the team thought it fit our ideal theme and feel perfectly.
+			</p>
+			<p class="cs-pull">It felt like a friendly mystery, rather than a terrible murder.</p>
+		</Prose>
+	</Section>
+
+	<Section heading="Settling with the theme">
+		<Brand
+			palettes={[
+				{
+					title: 'Primary Colors',
+					colors: [
+						{ name: 'Forgettable Beige', hex: '#FEE1C0' },
+						{ name: 'Raspberry Juice', hex: '#F24B4B' },
+						{ name: 'Midnight Veil', hex: '#453B61' },
+					],
+				},
+				{
+					title: 'Secondary Colors',
+					colors: [
+						{ name: 'Electric Blue', hex: '#1385F0' },
+						{ name: 'Honey, wash kids', hex: '#FFBB31' },
+						{ name: 'Counterspell Pink', hex: '#ED0F7E' },
+					],
+				},
+			]}
+			specimenColor="#fee1c0"
+			type={[
+				{ role: 'Headings', svg: Moga, label: 'MoGA' },
+				{ role: 'Subheadings', family: 'PT Serif', text: 'PT Serif', size: 32, tracking: 1.92 },
+				{ role: 'Paragraph', family: 'PT Sans', text: 'PT Sans', size: 16, tracking: 0.96 },
+			]}
+			logos={[
+				{ src: logo, alt: 'Midnight wordmark on Raspberry Juice', background: '#f24b4b' },
+				{ src: logo, alt: 'Midnight wordmark on black', glow: true },
+			]}
+		/>
+		<Gallery
+			caption="The aesthetic was easy to adapt to multiple pages. I loved that pages were able to stay simple but still be visually interesting with distinct shapes and stay vibrant with color."
+			rows={[
+				[{ src: pages1, alt: 'The Midnight “a strange letter arrives” page' }],
+				[
+					{ src: pages2, alt: 'The Midnight FAQ page' },
+					{ src: pages3, alt: 'The Midnight schedule page' },
+				],
+			]}
+		/>
+		<Gallery
+			caption="Other views, like the platform, needed to stay simple and functional. The underlying theme was still communicated through the bold color palette, sizing, and slightly funky shapes. They don’t detract from usability and functionality."
+			rows={[
+				[
+					{
+						src: platform1,
+						alt: 'The Midnight platform dashboard',
+						aspect: 483.5 / 300,
+						crop: { width: 103.01, height: 100.67, left: -1.45, top: -0.34 },
+					},
+					{
+						src: platform2,
+						alt: 'The Midnight platform project view',
+						aspect: 483.5 / 300,
+						crop: { width: 102.43, height: 103.33, left: -0.1, top: 1.01 },
+					},
+				],
+			]}
+		/>
+	</Section>
+
+	<Section heading="Murder mystery solved">
+		<Gallery
+			rows={[
+				[
+					{ src: event1, alt: 'Hackers gathered in a hall in Vienna' },
+					{ src: event2, alt: 'The Midnight event booklet', shadow: true },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				Midnight was the first highly stylized and fully branded project I’ve ever done. A lot of
+				our effort in creating a charming aesthetic reminiscent of a fun murder mystery puzzle added
+				to the atmosphere of group of hackers who attended the event and the community that formed
+				during the lead up.
+			</p>
+			<p>
+				With both our theming and the excellent work of the organizing team, I think Midnight will
+				be <strong>an experience that a lot of participants will hold on to</strong>.
+			</p>
+		</Prose>
+	</Section>
+</CaseStudy>

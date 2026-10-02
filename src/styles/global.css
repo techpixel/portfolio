@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --color-cream: #ffeedc;
+  --color-peach: #f8d2aa;
+  --color-midnight: #f24b4b;
+  --color-horizons: #ffa400;
+  --color-manifesto: #ff4849;
+}
+
+body {
+  @apply bg-black font-sans text-cream antialiased;
+}

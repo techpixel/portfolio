@@ -1,0 +1,84 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import './case-study.css';
+
+interface Props {
+	title: string;
+	tagline: string;
+	/** The project's colour, for the title and section headings. */
+	accent: string;
+	links: { label: string; href: string }[];
+	hero: ImageMetadata;
+	heroAlt: string;
+	meta: { label: string; value: string[] }[];
+	/** Google Fonts `css2` families for the brand's type specimens. */
+	fonts?: string;
+}
+
+const { title, tagline, accent, links, hero, heroAlt, meta, fonts } = Astro.props;
+---
+
+<Layout title={`${title} · Manitej`} description={tagline}>
+	{
+		fonts && (
+			<link
+				slot="head"
+				rel="stylesheet"
+				href={`https://fonts.googleapis.com/css2?${fonts}&display=swap`}
+			/>
+		)
+	}
+	<div class="cs-page" style={`--cs-accent: ${accent}`}>
+		<header class="cs-header cs-indent">
+			<a href="/" class="cs-back">← back</a>
+			<h1 class="cs-title">{title}</h1>
+			<p class="cs-tagline">{tagline}</p>
+			{
+				links.length > 0 && (
+					<p class="cs-links">
+						{links.map((link, i) => (
+							<>
+								{i > 0 && ' • '}
+								<a href={link.href} class="cs-link">
+									{link.label}
+								</a>
+							</>
+						))}
+					</p>
+				)
+			}
+		</header>
+
+		<Image
+			src={hero}
+			alt={heroAlt}
+			widths={[720, 1200, 1678]}
+			sizes="(min-width: 1248px) 1200px, 100vw"
+			loading="eager"
+			class="cs-hero w-full"
+		/>
+
+		<dl class="cs-meta cs-indent">
+			{
+				meta.map((item) => (
+					<div>
+						<dt>{item.label}</dt>
+						{item.value.map((line) => (
+							<dd>{line}</dd>
+						))}
+					</div>
+				))
+			}
+		</dl>
+
+		<article class="cs-article cs-indent">
+			<slot />
+		</article>
+
+		<footer class="cs-indent mt-24">
+			<a href="/" class="cs-back">← back</a>
+		</footer>
+	</div>
+</Layout>

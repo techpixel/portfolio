@@ -1,0 +1,39 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Portfolio from '../components/Portfolio.svelte';
+import { projects } from '../data/work';
+
+import portrait from '../assets/portrait.png';
+import midnightPreview from '../assets/work/midnight-preview.png';
+import horizonsPreview from '../assets/work/horizons-preview.png';
+import manifestoPreview from '../assets/work/manifesto-preview.png';
+import horizonsFerret from '../assets/work/horizons-ferret.png';
+
+const previewOptions = { width: 1450, format: 'webp' } as const;
+
+const [portraitImg, midnightImg, horizonsImg, manifestoImg, ferretImg] =
+	await Promise.all([
+		getImage({ src: portrait, width: 362, format: 'webp' }),
+		getImage({ src: midnightPreview, ...previewOptions }),
+		getImage({ src: horizonsPreview, ...previewOptions }),
+		getImage({ src: manifestoPreview, ...previewOptions }),
+		getImage({ src: horizonsFerret, width: 188, format: 'webp' }),
+	]);
+
+const previews = {
+	midnight: midnightImg.src,
+	horizons: horizonsImg.src,
+	manifesto: manifestoImg.src,
+};
+---
+
+<Layout title="Manitej" description="Programmer and designer studying Computer Science at Purdue University.">
+	<Portfolio
+		client:load
+		{projects}
+		{previews}
+		portrait={portraitImg.src}
+		horizonsFerret={ferretImg.src}
+	/>
+</Layout>

@@ -1,0 +1,20 @@
+---
+interface Props {
+	name: string;
+	hex: string;
+	/** A white edge for colours too close to the page's black. */
+	outlined?: boolean;
+}
+
+const { name, hex, outlined } = Astro.props;
+---
+
+<div>
+	<div
+		class:list={['cs-swatch-chip', outlined && 'outline outline-1 -outline-offset-1 outline-white']}
+		style={`background: ${hex}`}
+	>
+	</div>
+	<p class="cs-swatch-name">{name}</p>
+	<p class="cs-swatch-hex">{hex}</p>
+</div>

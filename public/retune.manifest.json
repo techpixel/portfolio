@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "tokens": {
+    "typography": {
+      "font-sans": {
+        "value": "\"Schibsted Grotesk\", ui-sans-serif, system-ui, sans-serif",
+        "variable": "--font-sans"
+      },
+      "font-display": {
+        "value": "\"Familjen Grotesk\", ui-sans-serif, system-ui, sans-serif",
+        "variable": "--font-display"
+      }
+    },
+    "colors": {
+      "color-cream": {
+        "value": "#ffeedc",
+        "variable": "--color-cream"
+      },
+      "color-peach": {
+        "value": "#f8d2aa",
+        "variable": "--color-peach"
+      },
+      "color-midnight": {
+        "value": "#f24b4b",
+        "variable": "--color-midnight"
+      },
+      "color-horizons": {
+        "value": "#ffa400",
+        "variable": "--color-horizons"
+      },
+      "color-manifesto": {
+        "value": "#ff4849",
+        "variable": "--color-manifesto"
+      }
+    }
+  }
+}

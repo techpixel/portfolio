@@ -1,0 +1,287 @@
+---
+import CaseStudy from '../../components/case-study/CaseStudy.astro';
+import Section from '../../components/case-study/Section.astro';
+import Prose from '../../components/case-study/Prose.astro';
+import Gallery from '../../components/case-study/Gallery.astro';
+import Brand from '../../components/case-study/Brand.astro';
+import Hypebuzz from '../../assets/work/specimens/horizons-hypebuzz.svg';
+
+import hero from '../../assets/work/horizons/hero.png';
+import reference1 from '../../assets/work/horizons/reference-1.png';
+import reference2 from '../../assets/work/horizons/reference-2.png';
+import previous1 from '../../assets/work/horizons/previous-1.png';
+import previous2 from '../../assets/work/horizons/previous-2.png';
+import aesthetic1 from '../../assets/work/horizons/aesthetic-1.png';
+import aesthetic2 from '../../assets/work/horizons/aesthetic-2.png';
+import game1 from '../../assets/work/horizons/game-1.png';
+import game2 from '../../assets/work/horizons/game-2.png';
+import game3 from '../../assets/work/horizons/game-3.png';
+import game4 from '../../assets/work/horizons/game-4.png';
+import landing from '../../assets/work/horizons/landing.png';
+import subevents from '../../assets/work/horizons/subevents.png';
+import postcard1 from '../../assets/work/horizons/postcard-1.png';
+import postcard2 from '../../assets/work/horizons/postcard-2.png';
+import logo from '../../assets/work/horizons/logo.svg?url';
+---
+
+<CaseStudy
+	title="Hack Club’s Horizons"
+	tagline="An identity made up of many identities"
+	accent="#fba74d"
+	links={[{ label: 'Website', href: 'https://horizons.hackclub.com' }, { label: 'Github', href: 'https://github.com/hackclub/horizons' }]}
+	hero={hero}
+	heroAlt="The Horizons landing page beside its logo and a printed postcard"
+	meta={[
+		{ label: 'Role', value: ['Lead Designer', 'Lead Developer'] },
+		{ label: 'Collaborators', value: ['Organizing Team', 'Artist'] },
+		{ label: 'Shipped', value: ['March 2026', '(Concluded August 2026)'] },
+	]}
+	fonts="family=Bricolage+Grotesque:opsz@14"
+>
+	<Section heading="This ain’t yo’ normal hackathon.">
+		<Prose>
+			<p>
+				Horizons is a marriage of two chaotic ideas. We originally wanted to run a very big, all
+				inclusive event in the US, as well as run many smaller, but distinct, global events. This
+				idea was not easy to explain, and <strong>the burden to communicate it fell upon me</strong>.
+			</p>
+			<h3>Problems</h3>
+			<ul>
+				<li>
+					We have 6 events with 6 different localizations, aesthetics, and identities. We need an
+					umbrella identity that isn’t overpowering, but isn’t <em>boring</em>.
+				</li>
+				<li>How do we convey this very unique format of a hackathons to a typical teenager?</li>
+			</ul>
+			<p class="cs-quiet">I also wanted to achieve some side goals with this, specifically making something that feels fun to look at and use!</p>
+		</Prose>
+	</Section>
+
+	<Section heading="An identity made up of identities.">
+		<Prose>
+			<p>
+				When developing Horizons, I was at a complete loss at where to begin. I started by
+				referencing work done by a previous team member.
+			</p>
+		</Prose>
+		<Gallery
+			rows={[
+				[
+					{ src: reference1, alt: 'A retro “RETRO” wordmark exploration by a previous team member' },
+					{ src: reference2, alt: 'A retro “Liberation” poster exploration' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				Before they left, they had been working on a highly retro aesthetic, that me and the team
+				really liked and appreciated. Unfortunately, while being aesthetic, I didn’t think it had a
+				strong appeal. It felt too serious, when the atmosphere we wanted was a lot more relaxed and
+				friendlier.
+			</p>
+			<p class="cs-quiet">It did serve as a good starting foundation.</p>
+		</Prose>
+		<Gallery
+			caption="I continued to reference some previous works, including previous unfinished projects of mine."
+			rows={[
+				[
+					{
+						src: previous1,
+						alt: 'An unfinished arcade-style project of mine',
+						aspect: 541 / 323,
+						crop: { width: 100.39, height: 101.24, left: -0.38, top: -0.62 },
+					},
+					{
+						src: previous2,
+						alt: 'Another unfinished retro project of mine',
+						aspect: 532 / 346,
+						crop: { width: 100.14, height: 100, left: -0.06, top: -0.1 },
+					},
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I started to develop this <strong>ambiguously vintage video game aesthetic</strong>. It wasn’t exactly
+				nostalgic, but it definitely took cues from a retro aesthetic and arcades.
+			</p>
+		</Prose>
+		<Gallery
+			rows={[
+				[
+					{ src: aesthetic1, alt: 'An early Horizons game-style screen', aspect: 334 / 198.99 },
+					{
+						src: aesthetic2,
+						alt: 'An early Horizons landing with the checkered horizon',
+						aspect: 522 / 311,
+						crop: { width: 100, height: 99.9, left: 0, top: 0.12 },
+					},
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				The Horizons aesthetic ended up being really playful, and didn’t feel dominating or
+				overpower. I believed that the other events would be able to come up with branding that
+				meshed well with our aesthetic. <span class="cs-quiet">But due to timeline constraints, it would take a while before I would know this for sure.</span>
+			</p>
+			<p>
+				We had to settle on a brand, and the team really enjoyed this aesthetic. So we locked in on
+				this one.
+			</p>
+		</Prose>
+		<Brand
+			palettes={[
+				{
+					title: 'Primary Colors',
+					colors: [
+						{ name: 'Aged Beige', hex: '#F3E8D8' },
+						{ name: 'It’s Just Black', hex: '#000000', outlined: true },
+						{ name: 'Polaroid Yellow', hex: '#FBA74D' },
+					],
+				},
+				{
+					title: 'Secondary Colors',
+					colors: [
+						{ name: 'Flamingo Pink', hex: '#F86D95' },
+						{ name: 'Forgotten Blue', hex: '#46467C' },
+					],
+				},
+			]}
+			specimenColor="#f3e8d8"
+			type={[
+				{ role: 'Headings', svg: Hypebuzz, label: 'HYPEBUZZ' },
+				{
+					role: 'Subheadings & Paragraph',
+					family: 'Bricolage Grotesque',
+					text: 'Bricolage Grotesque',
+					size: 20,
+					tracking: -0.22,
+				},
+			]}
+			logos={[{ src: logo, alt: 'The Hack Club Horizons wordmark', background: '#f9f3eb', vector: true }]}
+		/>
+		<Gallery
+			caption="To navigate, you could use your arrow keys and quickly scroll through everything relevant to you."
+			rows={[
+				[
+					{ src: game1, alt: 'The game-style Horizons landing page' },
+					{ src: game2, alt: 'The Horizons event picker, navigable with arrow keys' },
+				],
+				[
+					{ src: game3, alt: 'A Horizons event detail screen' },
+					{ src: game4, alt: 'The Horizons project submission screen' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I had <strong>such a blast</strong> working with the game-y aesthetic. I made everything feel almost as if it
+				were a game, including the landing and the main functionality. 
+			</p>
+			<p>
+				I definitely did see it more of an artistic and experimental project, and as a result, I
+				think I did go overboard in the features I implemented. I would later scale back on this.
+				But, I will say it did do a great job at conveying the whimsy behind the program, especially
+				at the start.
+			</p>
+		</Prose>
+	</Section>
+
+	<Section heading="Synergy">
+		<Prose>
+			<p>
+				While our events began to finalize, we realized that our game-styled landing wasn’t exactly
+				able to convey the many events we had on our roster. It was a largely based on a old source
+				design, during when we planned for only one event.
+			</p>
+			<p>After discussing it with the team, we decided we need a more traditional landing page design.</p>
+		</Prose>
+		<Gallery
+			size="column"
+			rows={[
+				[
+					{
+						src: landing,
+						alt: 'The top of the redesigned Horizons landing page',
+						aspect: 746 / 601,
+						crop: { width: 206.32, height: 440.11, left: -2.81, top: -3.48 },
+						outlined: true,
+					},
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I tried to be faithful to some of the game elements of the original design, but I wasn’t
+				afraid to get rid of anything that I thought I could not make work. I also incorporated a
+				new painterly accent on the black, which I thought would fit nicely. I wanted to subtly
+				capture <strong>the feel of a storybook</strong>, since after all, I want people to be making stories at a
+				hackathon!
+			</p>
+		</Prose>
+		<Gallery
+			caption="The designs of the subevents got finalized too!" rows={[[{ src: subevents, alt: 'The six Horizons subevent identities side by side' }]]} />
+		<Gallery
+			caption="They got incorporated into their own section!"
+			rows={[
+				[
+					{
+						src: landing,
+						alt: 'The subevents section of the Horizons landing page',
+						aspect: 485 / 277,
+						crop: { width: 206.32, height: 620.66, left: -2.81, top: -282.34 },
+					},
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				We did run into some legibility issues with certain events. With better coordination among
+				event artists, I think it could’ve been avoidable. I ended up making minor stylistic changes
+				to some of the events so they could be better integrated.
+			</p>
+		</Prose>
+		<Gallery
+			caption="I also could not realistically exhibit each event’s unique identity in all mediums, including print."
+			rows={[
+				[
+					{ src: postcard1, alt: 'The front of the Horizons postcard' },
+					{ src: postcard2, alt: 'The back of the Horizons postcard' },
+				],
+			]}
+		/>
+		<Prose>
+			<p>
+				I do think this was for the best. By presenting Horizons as an overarching event across
+				these unique subevents, we help participants visualize how this event hiearchy works. It’s
+				understood that <strong>everyone goes through Horizons to get to their specific event</strong>, which is the
+				intention.
+			</p>
+		</Prose>
+	</Section>
+
+	<Section heading="Imperfect Identity">
+		<Prose>
+			<p>
+				Horizons as a program ran successfully. With it’s conclusion, I’ve reflected on this concept
+				of a brand made up of different brands. I think it’s a concept I’d be interested in
+				revisiting, since Horizons has given me good insight on some specific nuances when
+				attempting something like this.
+			</p>
+			<ul>
+				<li>It’s <strong>very possible</strong> to make something not-bland that can synergies with many different things!</li>
+				<li>
+					You can <strong>never</strong> make something not-bland that will synergies with everything. That isn’t a
+					bad thing though! It just means that to add personality to the underlying brand, you need
+					to have more thoughtful coordination.
+				</li>
+			</ul>
+			<p>
+				I don’t think it’s a complete failure here, and I’ve had people appreciate the effort that
+				went into making sure each event had a distinct voice.
+			</p>
+			<p class="cs-pull">But I definitely want to try this again!</p>
+		</Prose>
+	</Section>
+</CaseStudy>

@@ -1,0 +1,40 @@
+---
+import CaseImage, { type CaseImageProps } from './CaseImage.astro';
+
+interface Props {
+	/** Each row's images share one height and fill the column's width together. */
+	rows: CaseImageProps[][];
+	caption?: string;
+	/**
+	 * `wide` runs to the hero's right edge. `column` keeps to the heading column, for
+	 * near-square screenshots that would otherwise be taller than the screen.
+	 */
+	size?: 'wide' | 'column';
+}
+
+const { rows, caption, size = 'wide' } = Astro.props;
+const width = size === 'wide' ? 1140 : 720;
+const ratioOf = (image: CaseImageProps) => image.aspect ?? image.src.width / image.src.height;
+// A cropped image is drawn wider than its frame, so it needs more pixels.
+const zoom = (image: CaseImageProps) => (image.crop ? image.crop.width / 100 : 1);
+---
+
+<figure class="cs-gallery" data-size={size}>
+	{
+		rows.map((row) => {
+			const total = row.reduce((sum, image) => sum + ratioOf(image), 0);
+			return (
+				<div class="cs-gallery-row">
+					{row.map((image) => (
+						<CaseImage
+							{...image}
+							style={`flex: ${ratioOf(image)} 1 0%`}
+							sizes={`(min-width: 769px) ${Math.round((width * ratioOf(image) * zoom(image)) / total)}px, ${Math.round(100 * zoom(image))}vw`}
+						/>
+					))}
+				</div>
+			);
+		})
+	}
+	{caption && <figcaption class="cs-caption">{caption}</figcaption>}
+</figure>

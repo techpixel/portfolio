@@ -1,0 +1,87 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Swatch from './Swatch.astro';
+
+type Specimen =
+	| { role: string; family: string; text: string; size: number; tracking?: number }
+	// Typefaces we can't serve as web fonts, drawn as outlines instead.
+	| { role: string; svg: (props: Record<string, unknown>) => unknown; label: string };
+
+interface Props {
+	palettes: { title: string; colors: { name: string; hex: string; outlined?: boolean }[] }[];
+	/** Specimens are shown in the brand's own text colour. */
+	specimenColor: string;
+	type: Specimen[];
+	logos?: {
+		src: ImageMetadata | string;
+		alt: string;
+		background?: string;
+		/** A soft cream glow, for the wordmark on black. */
+		glow?: boolean;
+		vector?: boolean;
+	}[];
+}
+
+const { palettes, specimenColor, type, logos } = Astro.props;
+---
+
+<div class="cs-brand">
+	{
+		palettes.map((palette) => (
+			<div>
+				<h3 class="cs-brand-label">{palette.title}</h3>
+				<div class="cs-swatches">
+					{palette.colors.map((color) => (
+						<Swatch {...color} />
+					))}
+				</div>
+			</div>
+		))
+	}
+	<div>
+		<h3 class="cs-brand-label">Typography</h3>
+		<div class="cs-specimens" style={`color: ${specimenColor}`}>
+			{
+				type.map((specimen) => (
+					<div>
+						<p class="cs-specimen-role">{specimen.role}</p>
+						{'svg' in specimen ? (
+							<specimen.svg role="img" aria-label={specimen.label} />
+						) : (
+							<p
+								style={`font-family: '${specimen.family}'; font-size: ${specimen.size}px; letter-spacing: ${specimen.tracking ?? 0}px; line-height: 1`}
+							>
+								{specimen.text}
+							</p>
+						)}
+					</div>
+				))
+			}
+		</div>
+	</div>
+	{
+		logos && (
+			<div>
+				<h3 class="cs-brand-label">Logo</h3>
+				<div class="cs-logos">
+					{logos.map((logo) => (
+						<div class="cs-logo" style={logo.background ? `background: ${logo.background}` : undefined}>
+							{typeof logo.src === 'string' ? (
+								<img src={logo.src} alt={logo.alt} class="w-full" />
+							) : (
+								<Image
+									src={logo.src}
+									alt={logo.alt}
+									widths={[320, 640]}
+									sizes="320px"
+									class:list={['w-full', logo.glow && 'shadow-[1px_0_12px_0_rgba(254,225,192,0.15)]']}
+								/>
+							)}
+						</div>
+					))}
+				</div>
+			</div>
+		)
+	}
+</div>
