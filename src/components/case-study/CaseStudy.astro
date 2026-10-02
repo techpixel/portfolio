@@ -84,23 +84,25 @@ const contents = [...body.matchAll(/<section class="cs-section"[^>]*\bid="([^"]+
 					</div>
 				))
 			}
-			{
-				contents.length > 1 && (
-					<div role="navigation" aria-label="Contents">
-						<dt>Contents</dt>
-						{contents.map((item) => (
-							<dd>
-								<a href={`#${item.id}`} class="cs-link">
-									{item.label}
-								</a>
-							</dd>
-						))}
-					</div>
-				)
-			}
 		</dl>
 
 		<article class="cs-article cs-indent">
+			{
+				contents.length > 1 && (
+					<nav class="cs-section cs-toc" aria-labelledby="contents">
+						<h2 class="cs-heading" id="contents">
+							Contents
+						</h2>
+						<ol class="cs-prose">
+							{contents.map((item) => (
+								<li>
+									<a href={`#${item.id}`}>{item.label}</a>
+								</li>
+							))}
+						</ol>
+					</nav>
+				)
+			}
 			<Fragment set:html={body} />
 		</article>
 

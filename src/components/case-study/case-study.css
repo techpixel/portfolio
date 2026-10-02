@@ -106,9 +106,6 @@
 	font-size: 18px;
 	line-height: 1.4;
 }
-.cs-meta dd .cs-link {
-	color: var(--cs-cream);
-}
 .cs-meta dt + dd {
 	margin-top: 8px;
 }
@@ -144,6 +141,27 @@
 /* Closer below a heading than between the blocks it introduces. */
 .cs-heading + * {
 	margin-top: -24px;
+}
+
+/* ---- Contents ----------------------------------------------------------- */
+
+/* Laid out like a section, a step smaller: it points at the sections, so it
+   shouldn't compete with them. */
+.cs-toc .cs-heading {
+	font-size: 24px;
+}
+.cs-toc ol {
+	padding-left: calc(var(--cs-step) + 1.5em);
+	list-style: decimal;
+	font-size: 16px;
+}
+.cs-toc li + li {
+	margin-top: 4px;
+}
+.cs-toc li::marker {
+	color: var(--cs-grey);
+	/* The face's default figures are tabular, which leaves "1 ." gappy. */
+	font-variant-numeric: proportional-nums;
 }
 
 /* ---- Body text ---------------------------------------------------------- */
@@ -343,6 +361,9 @@
 	}
 	.cs-heading {
 		font-size: 24px;
+	}
+	.cs-toc .cs-heading {
+		font-size: 20px;
 	}
 	.cs-heading + * {
 		margin-top: -16px;
