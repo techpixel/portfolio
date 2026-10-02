@@ -59,6 +59,7 @@
 }
 
 .cs-tagline {
+	margin-top: 4px;
 	font-size: 20px;
 	font-style: italic;
 	line-height: normal;
@@ -66,6 +67,7 @@
 }
 
 .cs-links {
+	margin-top: 8px;
 	font-family: var(--font-display);
 	font-size: 16px;
 	line-height: normal;
@@ -150,6 +152,11 @@
 	max-width: calc(var(--cs-step) + var(--cs-measure));
 	font-size: 18px;
 	line-height: 1.6;
+}
+/* Two text blocks in a row mark a turn in the story, so they part further than
+   text and a figure do. */
+.cs-prose + .cs-prose {
+	margin-top: 32px;
 }
 .cs-prose > * + * {
 	margin-top: 24px;

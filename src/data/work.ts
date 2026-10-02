@@ -13,7 +13,7 @@ export const projects: Project[] = [
 	{
 		slug: 'midnight',
 		name: 'Midnight',
-		description: 'a hacakthon in vienna',
+		description: 'a hackathon in vienna',
 		tags: ['branding', 'ui/ux design'],
 		accent: { bar: 'bg-midnight', text: 'text-cream', tag: 'bg-cream text-midnight' },
 	},
@@ -27,12 +27,12 @@ export const projects: Project[] = [
 	{
 		slug: 'manifesto',
 		name: 'Manifesto',
-		description: 'the hack club gap year application',
+		description: 'the Hack Club gap year application',
 		tags: ['storytelling', 'web design'],
 		accent: {
-			bar: 'border-4 border-manifesto bg-black',
-			text: 'text-manifesto',
-			tag: 'bg-manifesto text-black',
+			bar: 'bg-manifesto',
+			text: 'text-manifesto-white',
+			tag: 'bg-manifesto-white text-manifesto',
 		},
 	},
 ];
