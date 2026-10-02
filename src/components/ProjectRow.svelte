@@ -45,7 +45,6 @@
 	const STRETCH_START = 0.2;
 	const FADE_IN = 45;
 
-	let nameEl: HTMLElement;
 	// The wordmark starts at the italic name's width, so nothing beside it moves on the
 	// swap. Fitting it warps the word several times, so do it up front, once the italic
 	// face has loaded, rather than on the first frame of a hover.
@@ -58,14 +57,16 @@
 
 	onMount(() => {
 		document.fonts.ready.then(() => {
-			restWidth = nameEl.getBoundingClientRect().width;
+			// Measured with canvas, in CSS pixels, so page zoom on large screens doesn't
+			// skew the fit.
+			const ctx = document.createElement('canvas').getContext('2d');
+			if (!ctx) return;
+			ctx.font = `italic 400 32px "Schibsted Grotesk"`;
+			restWidth = ctx.measureText(project.name).width;
+			ctx.font = `italic 700 32px "Schibsted Grotesk"`;
+			boldWidth = ctx.measureText(project.name).width;
 			startStretch = stretchToFit(font, project.name, RESTING_SIZE, restWidth);
 			markWidth = inkWidth(font, project.name, WORDMARK_SIZE, WORDMARK_STRETCH);
-			const ctx = document.createElement('canvas').getContext('2d');
-			if (ctx) {
-				ctx.font = `italic 700 32px "Schibsted Grotesk"`;
-				boldWidth = ctx.measureText(project.name).width;
-			}
 		});
 	});
 
@@ -144,7 +145,6 @@
 	>
 		<span class="relative block h-10 shrink-0" style:width={leaving ? `${leavingWidth}px` : null}>
 			<span
-				bind:this={nameEl}
 				class="block origin-left text-[32px] whitespace-nowrap italic {colorFade} {animating
 					? 'absolute top-0 left-0'
 					: ''} {active ? project.accent.text : ''}"
@@ -169,7 +169,7 @@
 			class="flex flex-wrap items-center pt-1 {colorFade} {active ? project.accent.text : ''}"
 			style:column-gap="{gap}px"
 		>
-			<span>{project.description}</span>
+			<span class="max-md:w-full">{project.description}</span>
 			<span class="flex gap-2">
 				{#each project.tags as tag (tag)}
 					<Tag label={tag} class={active ? project.accent.tag : undefined} />

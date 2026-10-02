@@ -61,6 +61,19 @@ const wide = image ? image.width / image.height > 1.3 : false;
 			href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap"
 		/>
 		<slot name="head" />
+		<script is:inline>
+			// Past the 1492×889 screen the layout was drawn for, scale the whole page up so it
+			// keeps the same share of the screen instead of floating in empty space. Smaller
+			// screens, phones included, are untouched.
+			(() => {
+				const set = () => {
+					const zoom = Math.max(1, Math.min(innerWidth / 1492, innerHeight / 889));
+					document.documentElement.style.setProperty('--page-zoom', String(zoom));
+				};
+				set();
+				addEventListener('resize', set);
+			})();
+		</script>
 	</head>
 	<body>
 		<slot />

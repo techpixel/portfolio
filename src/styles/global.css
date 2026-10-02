@@ -13,4 +13,5 @@
 
 body {
   @apply bg-black font-sans text-cream antialiased;
+  zoom: var(--page-zoom, 1);
 }
