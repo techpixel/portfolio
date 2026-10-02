@@ -320,9 +320,12 @@
 	.cs-tagline {
 		font-size: 18px;
 	}
+	/* Edge to edge: wider than the column by the page padding on both sides. */
 	.cs-hero {
 		margin-top: 32px;
 		margin-inline: -20px;
+		width: calc(100% + 40px) !important;
+		max-width: none;
 	}
 	.cs-meta {
 		grid-auto-flow: row;
@@ -357,7 +360,8 @@
 	.cs-gallery-row {
 		gap: 12px;
 	}
-	.cs-gallery {
+	.cs-gallery,
+	.cs-gallery[data-size] {
 		width: 100%;
 		max-width: none;
 	}
