@@ -1,10 +1,9 @@
 <script lang="ts">
 	interface Props {
 		emblem: { hq: string; lq: string };
-		shown: boolean;
 	}
 
-	let { emblem, shown }: Props = $props();
+	let { emblem }: Props = $props();
 
 	// The tiny LQ emblem shows (blurred) until the HQ one has loaded, then the two crossfade.
 	// Both load with the page, so it's usually ready before the first hover.
@@ -13,15 +12,10 @@
 
 <!--
 	The project's mascot rises faintly behind the bar's right end (Figma "image 235": 113px at
-	35%, its right edge 56px past the column, its bottom 11px up from the bar's). It sits at
-	the very back of the column, under the bar and the text.
+	35%, its right edge 56px past the column, its bottom 11px up from the row's). It is drawn
+	first inside the highlight layer, so the bar covers its lower part, and fades with it.
 -->
-<div
-	class="pointer-events-none absolute -right-14 bottom-[11px] -z-20 size-[113px] transition-opacity duration-320 ease-out motion-reduce:transition-none max-lg:hidden {shown
-		? 'opacity-35'
-		: 'opacity-0'}"
-	aria-hidden="true"
->
+<div class="pointer-events-none absolute -right-14 bottom-[17px] size-[113px] opacity-35 max-lg:hidden" aria-hidden="true">
 	<img
 		src={emblem.lq}
 		alt=""

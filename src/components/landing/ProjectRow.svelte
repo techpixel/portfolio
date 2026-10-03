@@ -116,18 +116,20 @@
 </script>
 
 <!--
-	No stacking context of its own, so the bar and the mascot (negative z) fall behind everything
-	in the column, the bio included, with the mascot at the very back.
+	No stacking context of its own, so the highlight (negative z) falls behind everything in the
+	column, the bio included. The bar and the mascot fade as one layer: the bar is painted over
+	the mascot inside it, so nothing shows through while they fade. The bar reaches 6px into
+	the gap below the row, so the fill reads as more than a hairline around the type.
 -->
 <li class="relative">
-	<Mascot {emblem} shown={active} />
-	<!-- The bar reaches 6px into the gap below the row, so the fill reads as more than a hairline around the type. -->
 	<div
 		class="pointer-events-none absolute inset-x-0 top-0 -bottom-1.5 -z-10 transition-opacity duration-320 ease-out motion-reduce:transition-none {active
 			? 'opacity-100'
 			: 'opacity-0'}"
-		style:background-color={project.theme.bar}
-	></div>
+	>
+		<Mascot {emblem} />
+		<div class="absolute inset-0" style:background-color={project.theme.bar}></div>
+	</div>
 
 	<a
 		href="/work/{project.slug}"
