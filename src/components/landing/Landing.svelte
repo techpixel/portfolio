@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import type { Project, Slug } from '../../data/work';
 	import Bio from './Bio.svelte';
+	import NameWarp from './NameWarp.svelte';
 	import ProjectRow from './ProjectRow.svelte';
 
 	interface Props {
@@ -9,12 +10,11 @@
 		previews: Record<Slug, { src: string; style?: string }>;
 		portrait: string;
 		emblems: Record<Slug, { hq: string; lq: string }>;
-		/** Static art slotted in from Astro: the outlined name, and the silly flowers with their faces. */
-		name?: Snippet;
+		/** Static art slotted in from Astro: the sillies with their faces. */
 		silly?: Snippet;
 	}
 
-	let { projects, previews, portrait, emblems, name, silly }: Props = $props();
+	let { projects, previews, portrait, emblems, silly }: Props = $props();
 
 	let active = $state<Slug | null>(null);
 
@@ -48,7 +48,8 @@
 	style:--c-dots={theme?.dots ?? 'var(--color-cream)'}
 	data-active={active}
 >
-	<div class="relative z-10 flex w-full max-w-[517px] flex-col gap-12">
+	<!-- The column settles in as one as the page lands, on the dots' clock: 95% to full size, fading in from nothing. -->
+	<div class="settle-in relative z-10 flex w-full max-w-[517px] flex-col gap-12">
 		<Bio {portrait} />
 		<div class="flex flex-col gap-1">
 			<p class="text-xs leading-[normal] text-peach">Selected Work</p>
@@ -72,23 +73,17 @@
 		and pinned to the top. It is scaled to fill whatever is right of the column, so the name
 		runs to the window's edge as it does in the frame. Only the page clips it (overflow-clip
 		on main), so the name's outline can poke left past the column's gap while the dots and
-		the big flower run off the window's edges.
+		the big silly run off the window's edges.
 	-->
 	<div
 		class="pointer-events-none absolute inset-y-0 right-0 left-[599px] max-lg:hidden"
 		aria-hidden="true"
 	>
 		<div class="absolute inset-0" style:zoom="var(--art-scale, 1)">
-			<!-- The intro slides each piece in from off the canvas (Figma's "(animated)" frame): the dots and the flowers from the bottom right, the name from the right. -->
-			<div
-				class="dots art-in absolute top-[180px] right-0 bottom-0 left-[76px] {recolor}"
-				style="color: var(--c-dots); --from-x: 863px; --from-y: 761px; --ease: cubic-bezier(0, 0, 0.437, 0.987)"
-			></div>
-			<div
-				class="name-warp art-in absolute top-0 -left-0.5 {recolor}"
-				style="color: var(--c-ink); --from-x: 841px; --from-y: 0px; --ease: cubic-bezier(0, 0, 0.44, 0.99)"
-			>
-				{@render name?.()}
+			<!-- The intro: the dots fade in one after another from the bottom right corner; the sillies pop in; the name slides in along its warp. -->
+			<div class="dots absolute top-[180px] right-0 bottom-0 left-[76px] {recolor}" style="color: var(--c-dots)"></div>
+			<div class="name-warp absolute top-0 -left-0.5 {recolor}" style="color: var(--c-ink)">
+				<NameWarp />
 			</div>
 			{@render silly?.()}
 			{#each projects as project (project.slug)}
@@ -109,30 +104,65 @@
 </main>
 
 <style>
-	/*
-	 * Intro: every piece of the art slides in over 2s from its own offset and with its own
-	 * ease, as timed in Figma. `translate` keeps clear of the children's layout transforms.
-	 */
-	@keyframes -global-art-in {
+	/* On the dot sweep's clock exactly (same start, length and curve), so the two land together. `backwards` leaves no transform behind once done. */
+	.settle-in {
+		animation: settle-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) 150ms backwards;
+	}
+	@keyframes settle-in {
 		from {
-			translate: var(--from-x, 0px) var(--from-y, 0px);
+			scale: 0.95;
+			opacity: 0;
 		}
 		to {
-			translate: 0px 0px;
+			scale: 1;
+			opacity: 1;
 		}
-	}
-	:global(.art-in) {
-		animation: art-in 1.5s var(--ease, ease-out) both;
 	}
 
 	/*
-	 * Hovering a row fades the silly flowers out with the preview, on the same clock, and
-	 * collapses them once hidden. When the hover ends they come back at once, growing from
-	 * nothing on Figma's pop curve played backwards (a swell past full size, then settling),
-	 * held to whole frames, the small one 200ms behind. Durations and curves are set inline,
-	 * in index.astro.
+	 * A 5px square every 30px: the Figma pattern tiles a 1×1 rect in a 6×6 box, scaled by 30.
+	 * For the intro, a circle grows out of the bottom right corner and uncovers the dots as
+	 * it passes, through an edge about one spacing wide, so each dot fades in just after its
+	 * neighbour. The circle is a mask image pinned to that corner whose size animates, which
+	 * every browser interpolates. It ends at 142% of the element, just enough to reach its far
+	 * corner whatever the window, so the whole run is spent crossing dots. It starts a beat
+	 * after first paint so the sweep is seen.
 	 */
+	.dots {
+		background-image: conic-gradient(from 270deg at 5px 5px, currentColor 90deg, transparent 0);
+		background-size: 30px 30px;
+		mask-image: radial-gradient(circle farthest-side at 100% 100%, #000 calc(100% - 36px), transparent 100%);
+		mask-repeat: no-repeat;
+		mask-position: 100% 100%;
+		animation: dots-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) 150ms both;
+	}
+	@keyframes -global-dots-in {
+		from {
+			mask-size: 0% 0%;
+		}
+		to {
+			mask-size: 142% 142%;
+		}
+	}
+
+	/*
+	 * The sillies pop in from nothing with a soft swell past full size before settling, the
+	 * small one 200ms behind: for the intro, a beat after the dots start, and again when a
+	 * hover ends. Hovering a row fades them out with the preview,
+	 * on the same clock, and collapses them once hidden so the return can grow from nothing.
+	 * Durations and curves are set inline, in index.astro.
+	 */
+	@keyframes -global-pop-in {
+		from {
+			scale: 0;
+		}
+		to {
+			scale: 1;
+		}
+	}
 	:global(.silly) {
+		/* The intro is the same pop, a beat after the dots start; `backwards` holds them at nothing until then and hands scale back to the rules below once done. */
+		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 300ms) backwards;
 		transition:
 			scale var(--pop-duration) var(--pop-ease-in) var(--pop-delay),
 			opacity 0s;
@@ -145,16 +175,16 @@
 			scale 0s 320ms;
 	}
 	@media (prefers-reduced-motion: reduce) {
-		:global(.art-in) {
+		.dots,
+		.settle-in,
+		:global(.silly) {
 			animation: none;
+		}
+		.dots {
+			mask-image: none;
 		}
 		:global(.silly) {
 			transition: none;
 		}
 	}
-
-	/* A 5px square every 30px: the Figma pattern tiles a 1×1 rect in a 6×6 box, scaled by 30. */
-	.dots {
-		background-image: conic-gradient(from 270deg at 5px 5px, currentColor 90deg, transparent 0);
-		background-size: 30px 30px;
-	}</style>
+</style>

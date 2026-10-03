@@ -76,6 +76,7 @@ const wide = image ? image.width / image.height > 1.3 : false;
 			// pixels: the window's height, for layouts that fill it, and the scale at which the
 			// landing's art (841px wide, right of a 599px column) fills the rest of the window.
 			(() => {
+				document.documentElement.classList.add('js');
 				const root = document.documentElement.style;
 				const set = () => {
 					const zoom = Math.max(1, Math.min(innerWidth / 1440, innerHeight / 888));

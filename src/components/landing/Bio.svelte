@@ -34,7 +34,6 @@
 </section>
 
 <style>
-	/* Links take the page's link colour, and their own brand colour under the pointer. */
 	.bio-link {
 		color: var(--c-link);
 		text-decoration: underline;

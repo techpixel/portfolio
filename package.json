@@ -24,7 +24,8 @@
     "sharp": "^0.35.5",
     "svelte": "^5.57.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "warpjs": "^1.0.8"
   },
   "allowScripts": {
     "esbuild": true
