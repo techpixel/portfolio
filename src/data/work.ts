@@ -27,7 +27,7 @@ export const projects: Project[] = [
 	{
 		slug: 'manifesto',
 		name: 'Manifesto',
-		description: 'the Hack Club gap year application',
+		description: 'the hack club gap year application',
 		tags: ['storytelling', 'web design'],
 		accent: {
 			bar: 'bg-manifesto',

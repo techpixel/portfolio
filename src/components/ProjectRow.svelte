@@ -11,13 +11,13 @@
 	interface Props {
 		project: Project;
 		active: boolean;
-		horizonsFerret: string;
+		emblem: { hq: string; lq: string };
 		onactivate: () => void;
 		ondeactivate: () => void;
 		onpin: () => void;
 	}
 
-	let { project, active, horizonsFerret, onactivate, ondeactivate, onpin }: Props = $props();
+	let { project, active, emblem, onactivate, ondeactivate, onpin }: Props = $props();
 
 	const DURATION = 320;
 	const font = familjenGrotesk700;
@@ -125,7 +125,7 @@
 			: 'opacity-0'}"
 	>
 		<div class="absolute inset-x-0 top-[100px] bottom-0 {project.accent.bar}"></div>
-		<ProjectMascot slug={project.slug} {horizonsFerret} />
+		<ProjectMascot {emblem} />
 	</div>
 
 	<a

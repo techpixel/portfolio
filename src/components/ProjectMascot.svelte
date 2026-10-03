@@ -1,39 +1,36 @@
 <script lang="ts">
-	import type { Slug } from '../data/work';
-
 	interface Props {
-		slug: Slug;
-		horizonsFerret: string;
+		emblem: { hq: string; lq: string };
 	}
 
-	let { slug, horizonsFerret }: Props = $props();
+	let { emblem }: Props = $props();
+
+	// The tiny LQ emblem shows (blurred) until the HQ one has loaded, then the two
+	// crossfade. Both load with the page, so it's usually ready before the first hover.
+	let loaded = $state(false);
 </script>
 
 <!--
-	Every mascot is centred in the same 93px box, anchored 10px in from the highlight bar's
-	right end and 5px up from its bottom (Figma "Frame 86"). Positioned against the bar's box.
+	All three emblems share one square frame in Figma, so they share one box here, anchored
+	10px in from the highlight bar's right end and 5px up from its bottom (Figma "Frame 86").
 -->
 <div
-	class="pointer-events-none absolute right-[10px] bottom-[5px] flex h-[93.782px] w-[93px] items-center justify-center max-md:hidden"
+	class="pointer-events-none absolute right-[10px] bottom-[5px] size-[94px] max-md:hidden"
 	aria-hidden="true"
 >
-	{#if slug === 'midnight'}
-		<img src="/work/midnight-crow.svg" alt="" width="93" height="81.6" class="max-w-none" />
-	{:else if slug === 'horizons'}
-		<img src={horizonsFerret} alt="" width="94" height="95" class="max-w-none" />
-	{:else}
-		<!--
-			Drawn at its Figma size: a 56px mark whose 64px SVG includes a 4px outline, nudged
-			8px right of centre.
-		-->
-		<div class="relative size-14 translate-x-2">
-			<img
-				src="/work/manifesto-mark.svg"
-				alt=""
-				width="64"
-				height="64"
-				class="absolute -top-1 -left-1 max-w-none"
-			/>
-		</div>
-	{/if}
+	<img
+		src={emblem.lq}
+		alt=""
+		width="94"
+		height="94"
+		class="absolute inset-0 size-full blur-[2px] transition-opacity duration-200 {loaded ? 'opacity-0' : 'opacity-100'}"
+	/>
+	<img
+		src={emblem.hq}
+		alt=""
+		width="94"
+		height="94"
+		class="absolute inset-0 size-full transition-opacity duration-200 {loaded ? 'opacity-100' : 'opacity-0'}"
+		onload={() => (loaded = true)}
+	/>
 </div>

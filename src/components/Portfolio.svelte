@@ -7,10 +7,10 @@
 		projects: Project[];
 		previews: Record<Slug, { src: string; style?: string }>;
 		portrait: string;
-		horizonsFerret: string;
+		emblems: Record<Slug, { hq: string; lq: string }>;
 	}
 
-	let { projects, previews, portrait, horizonsFerret }: Props = $props();
+	let { projects, previews, portrait, emblems }: Props = $props();
 
 	let active = $state<Slug | null>(null);
 
@@ -55,7 +55,7 @@
 			{#each projects as project (project.slug)}
 				<ProjectRow
 					{project}
-					{horizonsFerret}
+					emblem={emblems[project.slug]}
 					active={active === project.slug}
 					onactivate={() => activate(project.slug)}
 					ondeactivate={deactivate}

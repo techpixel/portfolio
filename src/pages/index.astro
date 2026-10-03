@@ -9,23 +9,35 @@ import portrait from '../assets/portrait.webp';
 import midnightPreview from '../assets/work/midnight-preview.webp';
 import horizonsPreview from '../assets/work/horizons/hero.webp';
 import manifestoPreview from '../assets/work/manifesto/hero.webp';
-import horizonsFerret from '../assets/work/horizons-ferret.webp';
+import midnightEmblem from '../assets/work/emblems/midnight-hq.webp';
+import midnightEmblemLq from '../assets/work/emblems/midnight-lq.webp';
+import horizonsEmblem from '../assets/work/emblems/horizons-hq.webp';
+import horizonsEmblemLq from '../assets/work/emblems/horizons-lq.webp';
+import manifestoEmblem from '../assets/work/emblems/manifesto-hq.webp';
+import manifestoEmblemLq from '../assets/work/emblems/manifesto-lq.webp';
 
 const previewOptions = { width: 1450, format: 'webp' } as const;
 
-const [portraitImg, midnightImg, horizonsImg, manifestoImg, ferretImg] =
+const [portraitImg, midnightImg, horizonsImg, manifestoImg] =
 	await Promise.all([
 		getImage({ src: portrait, width: 362, format: 'webp' }),
 		getImage({ src: midnightPreview, ...previewOptions }),
 		getImage({ src: horizonsPreview, ...previewOptions }),
 		getImage({ src: manifestoPreview, ...previewOptions }),
-		getImage({ src: horizonsFerret, width: 188, format: 'webp' }),
 	]);
 
 const previews = {
 	midnight: { src: midnightImg.src, style: await placeholder(midnightPreview) },
 	horizons: { src: horizonsImg.src, style: await placeholder(horizonsPreview) },
 	manifesto: { src: manifestoImg.src, style: await placeholder(manifestoPreview) },
+};
+
+// Row emblems, exported from Figma as a sharp HQ WebP and a tiny LQ one to show first.
+// Used as-is: they're already sized and compressed.
+const emblems = {
+	midnight: { hq: midnightEmblem.src, lq: midnightEmblemLq.src },
+	horizons: { hq: horizonsEmblem.src, lq: horizonsEmblemLq.src },
+	manifesto: { hq: manifestoEmblem.src, lq: manifestoEmblemLq.src },
 };
 ---
 
@@ -35,6 +47,6 @@ const previews = {
 		{projects}
 		{previews}
 		portrait={portraitImg.src}
-		horizonsFerret={ferretImg.src}
+		{emblems}
 	/>
 </Layout>
