@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { glyphGeometry, type GlyphFont } from '../lib/glyphkit';
+	import { glyphGeometry, type GlyphFont } from '../../lib/glyphkit';
 
 	/** Headroom above the cap line, in em units, so round letters' overshoot isn't clipped. */
 	const OVERSHOOT = 30;

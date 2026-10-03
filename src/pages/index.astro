@@ -1,12 +1,17 @@
 ---
 import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import Portfolio from '../components/Portfolio.svelte';
+import Landing from '../components/landing/Landing.svelte';
 import { projects } from '../data/work';
 import { placeholder } from '../lib/placeholder';
+import { reversed, steppedCss, type Bezier } from '../lib/stepped';
 
+import NameWarp from '../assets/landing/name-warp.svg';
+import SillyBig from '../assets/landing/silly-big.svg';
+import SillySmall from '../assets/landing/silly-small.svg';
+import face from '../assets/landing/face.webp';
 import portrait from '../assets/portrait.webp';
-import midnightPreview from '../assets/work/midnight-preview.webp';
+import midnightPreview from '../assets/work/midnight/hero.webp';
 import horizonsPreview from '../assets/work/horizons/hero.webp';
 import manifestoPreview from '../assets/work/manifesto/hero.webp';
 import midnightEmblem from '../assets/work/emblems/midnight-hq.webp';
@@ -16,15 +21,16 @@ import horizonsEmblemLq from '../assets/work/emblems/horizons-lq.webp';
 import manifestoEmblem from '../assets/work/emblems/manifesto-hq.webp';
 import manifestoEmblemLq from '../assets/work/emblems/manifesto-lq.webp';
 
-const previewOptions = { width: 1450, format: 'webp' } as const;
+// Previews show in a 745×449 box that the art scaling (up to 1.5×) and sharp screens (2×)
+// can enlarge, so they go out at 2250px from the 2517px heroes, at a high quality. The
+// portrait (480px for a 160px box) is already small and goes out as is.
+const previewOptions = { width: 2250, format: 'webp', quality: 90 } as const;
 
-const [portraitImg, midnightImg, horizonsImg, manifestoImg] =
-	await Promise.all([
-		getImage({ src: portrait, width: 362, format: 'webp' }),
-		getImage({ src: midnightPreview, ...previewOptions }),
-		getImage({ src: horizonsPreview, ...previewOptions }),
-		getImage({ src: manifestoPreview, ...previewOptions }),
-	]);
+const [midnightImg, horizonsImg, manifestoImg] = await Promise.all([
+	getImage({ src: midnightPreview, ...previewOptions }),
+	getImage({ src: horizonsPreview, ...previewOptions }),
+	getImage({ src: manifestoPreview, ...previewOptions }),
+]);
 
 const previews = {
 	midnight: { src: midnightImg.src, style: await placeholder(midnightPreview) },
@@ -32,7 +38,26 @@ const previews = {
 	manifesto: { src: manifestoImg.src, style: await placeholder(manifestoPreview) },
 };
 
-// Row emblems, exported from Figma as a sharp HQ WebP and a tiny LQ one to show first.
+// The sillies' motion, from Figma's "(animated)" frame, sampled at the landing's film rate.
+// Each slides in from the bottom right on its own curve. Coming back after a hover, each
+// grows from nothing on the pop curve played backwards, the small one 200ms behind.
+const INTRO_MS = 1500;
+const POP: Bezier = [0.3, -0.05, 0.7, -0.5];
+const motion = (fromX: number, fromY: number, intro: Bezier, popMs: number, popDelayMs: number) =>
+	[
+		`--from-x: ${fromX}px`,
+		`--from-y: ${fromY}px`,
+		`--ease: ${steppedCss(intro, INTRO_MS)}`,
+		`--pop-duration: ${popMs}ms`,
+		`--pop-delay: ${popDelayMs}ms`,
+		`--pop-ease-in: ${steppedCss(reversed(POP), popMs)}`,
+	].join('; ');
+const sillies = {
+	big: motion(664.51, 658.731, [0.321, 0.792, 0.753, 0.992], 725, 0),
+	small: motion(356.742, 625.393, [0.105, 0.822, 0.69, 1.003], 797, 200),
+};
+
+// Row mascots, exported from Figma as a sharp HQ WebP and a tiny LQ one to show first.
 // Used as-is: they're already sized and compressed.
 const emblems = {
 	midnight: { hq: midnightEmblem.src, lq: midnightEmblemLq.src },
@@ -42,11 +67,43 @@ const emblems = {
 ---
 
 <Layout>
-	<Portfolio
-		client:load
-		{projects}
-		{previews}
-		portrait={portraitImg.src}
-		{emblems}
-	/>
+	<Landing client:load {projects} {previews} portrait={portrait.src} {emblems}>
+		<NameWarp slot="name" />
+		<!--
+			Two silly flowers, each grouped with its face so the pair moves and scales as one, at
+			the design's coordinates within the art area. Each group box is the pair's bounds, so
+			scaling pivots on its centre as in Figma. The intro slides each group in (Figma "Group
+			63" and "Group 64" motion); hovering a row fades them out and they pop back after, in
+			Landing.svelte. The face is a stand-in cut from the original artwork; swap
+			src/assets/landing/face.webp for the real one.
+		-->
+		<Fragment slot="silly">
+			<div
+				class="silly art-in absolute top-[125.59px] left-[85px] h-[943.918px] w-[991.293px] text-cream"
+				style={sillies.big}
+			>
+				<SillyBig />
+				<img
+					src={face.src}
+					alt=""
+					width="150"
+					height="166"
+					class="absolute top-[398.41px] left-[571px] h-[166px] w-[150px] -translate-x-1/2 -translate-y-1/2 rotate-[17.7deg]"
+				/>
+			</div>
+			<div
+				class="silly art-in absolute top-[328.61px] left-[24.26px] h-[531.122px] w-[507.892px] text-cream"
+				style={sillies.small}
+			>
+				<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[92.59deg]"><SillySmall /></div>
+				<img
+					src={face.src}
+					alt=""
+					width="85"
+					height="94"
+					class="absolute top-[223.49px] left-[239.04px] h-[94px] w-[85px] -translate-x-1/2 -translate-y-1/2 -scale-x-100 -rotate-[7.49deg]"
+				/>
+			</div>
+		</Fragment>
+	</Landing>
 </Layout>
