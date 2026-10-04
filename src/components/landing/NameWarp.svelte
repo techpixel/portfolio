@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { prefersReducedMotion } from 'svelte/motion';
+	import { prefersReducedMotion, Spring } from 'svelte/motion';
 	// @ts-expect-error warpjs ships no types
 	import Warp from 'warpjs';
 	import svg from '../../assets/landing/name-warp.svg?raw';
@@ -11,27 +11,50 @@
 	const [, width, height] = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svg)!;
 
 	/*
-	 * The intro slides the name in along its own warp, the way the Figma version slid it in
-	 * along x. The warp's spine is the baseline curve drawn in Figma over the mark ("Vector
-	 * 54": a dip under "ITEJ", a crest at "RG", easing down again at the right). Every point
-	 * of the mark is described by where it sits along that curve and how far above it, so
-	 * the letters can be carried along the curve and set back down exactly where they were.
-	 * Past the curve's right end the line runs on along its end tangent, which is where the
-	 * letters come in from.
+	 * The mark is flat text warped by its baseline curve, drawn in Figma over it ("Vector 54":
+	 * a dip under "ITEJ", a crest at "RG", easing down again at the right): every column of
+	 * the text is moved straight down onto the curve, so stems stay vertical and letters shear
+	 * where the curve slopes. Each point of the mark is described by its x and its height
+	 * straight above the curve, so the letters can be slid along x, riding the curve, and set
+	 * back down exactly where they were. Past either end the curve runs on along its end
+	 * slope, which on the right is where the intro's letters come in from.
 	 */
 	type Point = [number, number];
-	/** The curve's three cubic segments, in the mark's coordinates (the drawing's box, moved by 1.5, 66). */
-	const SPINE: [Point, Point, Point, Point][] = (
+	type Segment = [Point, Point, Point, Point];
+	/** Cubic segments drawn in Figma, moved into the mark's coordinates. */
+	const placed = (segments: number[][][], dx: number, dy: number) =>
+		segments.map((seg) => seg.map(([x, y]) => [x + dx, y + dy] as Point) as Segment);
+	/** The resting curve, "Vector 54": three segments in its drawing's box, which sits at 1.5, 66 in the mark's. */
+	const REST = placed(
 		[
 			[[0.506295, 39.7453], [11.9873, 46.4858], [58.1082, 78.9256], [183.289, 79.9999]],
 			[[183.289, 79.9999], [308.47, 81.0742], [523.006, 1.00001], [639.874, 1]],
 			[[639.874, 1], [756.743, 0.99999], [822.006, 33.4836], [841.506, 40.7313]],
-		] as [Point, Point, Point, Point][]
-	).map((seg) => seg.map(([x, y]) => [x + 1.5, y + 66] as Point) as [Point, Point, Point, Point]);
-	/** Samples per segment. The curve is gentle, so this keeps the polyline within a fraction of a pixel. */
+		],
+		1.5,
+		66,
+	);
+	/*
+	 * The stretch spline, "Vector 55": the resting curve carried 59px to the left and given a
+	 * first segment there, where the dip's wall climbs on to the crest's height. Placed so its
+	 * right end meets the resting curve's, which is where the mark is pinned.
+	 */
+	const STRETCH = placed(
+		[
+			[[0.560053, 1.00006], [0.560053, 1.00006], [47.56, 32.8171], [59.5601, 39.7453]],
+			[[59.5601, 39.7453], [71.5601, 46.6735], [117.162, 78.9256], [242.343, 79.9999]],
+			[[242.343, 79.9999], [367.524, 81.0742], [582.06, 1.00001], [698.928, 1]],
+			[[698.928, 1], [815.796, 0.99999], [881.06, 33.4836], [900.56, 40.7313]],
+		],
+		1.5 + 841.506 - 900.56,
+		66,
+	);
+	/** The resting curve with a zero-length first segment, so it blends with the stretch spline segment for segment. */
+	const REST_BLENDABLE: Segment[] = [[REST[0][0], REST[0][0], REST[0][0], REST[0][0]], ...REST];
+	/** Samples per segment. The curves are gentle, so this keeps the polylines within a fraction of a pixel. */
 	const SAMPLES = 160;
 
-	/** How far along the curve, in px, the slide starts: past the far end, so the first letter is out of view. */
+	/** How far right, in px, the slide starts: past the far end, so the first letter is out of view. */
 	const SLIDE_FROM = 900;
 	const DURATION = 1200;
 	/** A long ease-out, the dot sweep's curve: fast in, then a glide to rest with no halt. */
@@ -39,82 +62,56 @@
 	/** Outline segments longer than this many px are subdivided, so they bend rather than stay rigid. */
 	const INTERPOLATE = 8;
 
-	/** The spine as a polyline: positions, cumulative arc length, unit tangents and upward unit normals. */
-	function sampleSpine() {
-		const pts: Point[] = [];
-		for (const [p0, p1, p2, p3] of SPINE) {
+	/** A curve as y over x: its sampled points, x increasing, since each runs left to right. */
+	function sampleCurve(segments: Segment[]) {
+		const xs: number[] = [];
+		const ys: number[] = [];
+		for (const [p0, p1, p2, p3] of segments) {
 			for (let i = 0; i < SAMPLES; i++) {
 				const t = i / SAMPLES;
 				const u = 1 - t;
-				pts.push([
-					u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0],
-					u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1],
-				]);
+				xs.push(u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0]);
+				ys.push(u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]);
 			}
 		}
-		pts.push(SPINE[SPINE.length - 1][3]);
-		const s = [0];
-		for (let i = 1; i < pts.length; i++) s.push(s[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
-		const tangent: Point[] = pts.map((p, i) => {
-			const a = pts[Math.max(0, i - 1)];
-			const b = pts[Math.min(pts.length - 1, i + 1)];
-			const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
-			return [(b[0] - a[0]) / len, (b[1] - a[1]) / len];
-		});
-		// Up is to the left of the direction of travel, in y-down coordinates.
-		const normal: Point[] = tangent.map(([tx, ty]) => [ty, -tx]);
-		return { pts, s, tangent, normal };
+		xs.push(segments[segments.length - 1][3][0]);
+		ys.push(segments[segments.length - 1][3][1]);
+		return { xs, ys };
 	}
-	type Spine = ReturnType<typeof sampleSpine>;
+	type Curve = ReturnType<typeof sampleCurve>;
+	const rest = sampleCurve(REST);
+	const stretched = sampleCurve(STRETCH);
+	/** The right end, where the mark is pinned, and the two curves' widths. Their ratio is how much wider the mark gets. */
+	const RIGHT = rest.xs[rest.xs.length - 1];
+	const WIDTH = RIGHT - rest.xs[0];
+	const STRETCHED_WIDTH = RIGHT - stretched.xs[0];
 
-	/** The point `v` above the spine at arc position `s`, continuing straight past either end. */
-	function along(spine: Spine, s: number, v: number): Point {
-		const { pts, s: S, tangent, normal } = spine;
-		const last = pts.length - 1;
-		if (s <= 0) return [pts[0][0] + tangent[0][0] * s + normal[0][0] * v, pts[0][1] + tangent[0][1] * s + normal[0][1] * v];
-		if (s >= S[last]) {
-			const over = s - S[last];
-			return [pts[last][0] + tangent[last][0] * over + normal[last][0] * v, pts[last][1] + tangent[last][1] * over + normal[last][1] * v];
-		}
+	/** The curve `q` of the way from rest to stretched: the blend of the two curves' control points. */
+	function curveAt(q: number): Curve {
+		if (q <= 0) return rest;
+		if (q >= 1) return stretched;
+		return sampleCurve(
+			REST_BLENDABLE.map(
+				(seg, i) => seg.map(([x, y], j) => [x + (STRETCH[i][j][0] - x) * q, y + (STRETCH[i][j][1] - y) * q] as Point) as Segment,
+			),
+		);
+	}
+
+	/** The curve's height at `x`, continuing along its end slope past either end. */
+	function heightAt({ xs, ys }: Curve, x: number): number {
+		const last = xs.length - 1;
 		let lo = 0;
 		let hi = last;
-		while (hi - lo > 1) {
-			const mid = (lo + hi) >> 1;
-			if (S[mid] <= s) lo = mid;
-			else hi = mid;
+		if (x <= xs[0]) hi = 1;
+		else if (x >= xs[last]) lo = last - 1;
+		else {
+			while (hi - lo > 1) {
+				const mid = (lo + hi) >> 1;
+				if (xs[mid] <= x) lo = mid;
+				else hi = mid;
+			}
 		}
-		const f = (s - S[lo]) / (S[hi] - S[lo]);
-		const nx = normal[lo][0] + (normal[hi][0] - normal[lo][0]) * f;
-		const ny = normal[lo][1] + (normal[hi][1] - normal[lo][1]) * f;
-		const nl = Math.hypot(nx, ny);
-		return [
-			pts[lo][0] + (pts[hi][0] - pts[lo][0]) * f + (nx / nl) * v,
-			pts[lo][1] + (pts[hi][1] - pts[lo][1]) * f + (ny / nl) * v,
-		];
-	}
-
-	/** Where a point of the mark sits relative to the spine: its arc position and height above it. */
-	function locate(spine: Spine, [x, y]: Point): [number, number] {
-		const { pts, s: S } = spine;
-		// The spine runs left to right, so the nearest sample by x is on the right segment.
-		let lo = 0;
-		let hi = pts.length - 1;
-		while (hi - lo > 1) {
-			const mid = (lo + hi) >> 1;
-			if (pts[mid][0] <= x) lo = mid;
-			else hi = mid;
-		}
-		// Project onto that segment for the arc position, and measure the height along its normal.
-		const a = pts[lo];
-		const b = pts[hi];
-		const dx = b[0] - a[0];
-		const dy = b[1] - a[1];
-		const f = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy)));
-		const s = S[lo] + (S[hi] - S[lo]) * f;
-		const [cx, cy] = along(spine, s, 0);
-		const len = Math.hypot(dx, dy);
-		const v = (x - cx) * (dy / len) + (y - cy) * (-dx / len);
-		return [s, v];
+		return ys[lo] + ((x - xs[lo]) * (ys[hi] - ys[lo])) / (xs[hi] - xs[lo]);
 	}
 
 	let glyphs: SVGPathElement;
@@ -122,49 +119,95 @@
 	// slides in. Only when scripts run: without them the finished mark simply shows.
 	let ready = $state(false);
 
+	/*
+	 * Hovering stretches the letters onto the stretch spline: the mark is warped by it as it
+	 * was by the resting curve, so it grows leftward with its right end in place and the "M"
+	 * rides up the new wall. Every point goes as much further from the right end as the curve
+	 * is wider and keeps its height above the curve, so each letter gets wider and no shorter.
+	 * The stretch spline's left end is drawn at the crest's height, so the "M" arrives with
+	 * its top on the page's top edge, as the crest's letters already are; shortening the
+	 * letters would drop it below. The letters run OVERRUN px past the spline's start, on
+	 * along its slope, which is what it takes for the "M"'s top corner, a little in from its
+	 * left edge, to meet the edge exactly. The amount is a spring: damped to a standstill
+	 * going in, so the stretch lands without a bounce past the edge, and loose on release, so
+	 * the letters overshoot past rest, drawn in narrower for a beat.
+	 */
+	// TEMP: the hover is switched off for now. Set true to bring the squash back.
+	const HOVER = false;
+	const OVERRUN = 3.9;
+	const PRESS_DAMPING = 0.9;
+	const RELEASE_DAMPING = 0.45;
+	const squash = new Spring(0, { stiffness: 0.2, damping: PRESS_DAMPING, precision: 0.001 });
+	const press = () => {
+		squash.damping = PRESS_DAMPING;
+		squash.target = 1;
+	};
+	const release = () => {
+		squash.damping = RELEASE_DAMPING;
+		squash.target = 0;
+	};
+	/** Redraws the mark for the slide so far and a squash amount. Set once warpjs is up; absent under reduced motion, so hovering then does nothing. */
+	let draw: ((q: number) => void) | undefined;
+	$effect(() => {
+		// Read first: with `draw` not yet set, `draw?.(squash.current)` would skip the read and never follow the spring.
+		const q = squash.current;
+		draw?.(q);
+	});
+
 	onMount(() => {
 		if (prefersReducedMotion.current) {
 			ready = true;
 			return;
 		}
-		const spine = sampleSpine();
 		// warpjs works on its own copy of the glyphs; each frame's result is copied across, so
 		// the mask and the rest of the SVG stay out of its hands.
 		const scratch = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		scratch.innerHTML = `<path d="${d}"/>`;
 		const warp = new Warp(scratch, 'c');
 		warp.interpolate(INTERPOLATE);
-		// Each point remembers its place on the spine, and the sliver the polyline misses, which
-		// is blended back in as the slide completes so the last frame is the mark itself.
-		warp.transform(([x, y]: number[]) => {
-			const [s, v] = locate(spine, [x, y]);
-			const [hx, hy] = along(spine, s, v);
-			return [x, y, s, v, x - hx, y - hy];
-		});
+		// Each point remembers its resting x and its height straight above the resting curve.
+		warp.transform(([x, y]: number[]) => [x, y, x, y - heightAt(rest, x)]);
 		const source = scratch.querySelector('path')!;
+		/** The slide's eased progress, 0 to 1. */
+		let t = 0;
+		draw = (q) => {
+			// At rest the path is the asset's own, not the polyline's reading of it.
+			if (t >= 1 && q === 0) {
+				glyphs.setAttribute('d', d);
+				return;
+			}
+			const shift = SLIDE_FROM * (1 - t);
+			const curve = curveAt(q);
+			// Past rest on the rebound (q below 0) the curve is the resting one and the letters draw in toward its right end.
+			const stretch = q > 0 ? (RIGHT - curve.xs[0] + OVERRUN * q) / WIDTH : 1 + ((STRETCHED_WIDTH + OVERRUN) / WIDTH - 1) * q;
+			warp.transform(([, , x, h]: number[]) => {
+				const X = RIGHT + (x - RIGHT) * stretch + shift;
+				return [X, heightAt(curve, X) + h, x, h];
+			});
+			glyphs.setAttribute('d', source.getAttribute('d')!);
+		};
 		let raf = 0;
 		let start = 0;
 		const frame = (now: number) => {
 			if (!start) start = now;
-			const t = ease(Math.min(1, (now - start) / DURATION));
-			const shift = SLIDE_FROM * (1 - t);
-			warp.transform(([, , s, v, cx, cy]: number[]) => {
-				const [x, y] = along(spine, s + shift, v);
-				return [x + cx * t, y + cy * t, s, v, cx, cy];
-			});
-			glyphs.setAttribute('d', source.getAttribute('d')!);
+			t = ease(Math.min(1, (now - start) / DURATION));
+			draw!(squash.current);
 			ready = true;
 			if (t < 1) raf = requestAnimationFrame(frame);
-			else glyphs.setAttribute('d', d);
 		};
 		raf = requestAnimationFrame(frame);
-		return () => cancelAnimationFrame(raf);
+		return () => {
+			cancelAnimationFrame(raf);
+			draw = undefined;
+		};
 	});
 </script>
 
 <!--
 	"MANITEJ BOORGU", outlined. The stroke sits outside the letters only: the mask hides its
 	inner half. The mask's rect is generous so the letters show wherever the slide puts them.
+	The SVG's box is the hover target, so the squash doesn't flicker as the letters slide out
+	from under the pointer.
 -->
 <svg
 	{width}
@@ -174,6 +217,9 @@
 	overflow="visible"
 	aria-hidden="true"
 	class:ready
+	class:hoverable={HOVER}
+	onmouseenter={HOVER ? press : undefined}
+	onmouseleave={HOVER ? release : undefined}
 >
 	<defs>
 		<path id="name-warp-glyphs" {d} bind:this={glyphs} />
@@ -186,6 +232,10 @@
 </svg>
 
 <style>
+	/* The art around the mark lets the pointer through; the mark takes it back for its squash. */
+	svg.hoverable {
+		pointer-events: auto;
+	}
 	:global(html.js) svg:not(.ready) {
 		visibility: hidden;
 	}

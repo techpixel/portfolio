@@ -71,9 +71,10 @@
 	<!--
 		The art right of the column, drawn at the coordinates of the 1440×888 design (x − 599)
 		and pinned to the top. It is scaled to fill whatever is right of the column, so the name
-		runs to the window's edge as it does in the frame. Only the page clips it (overflow-clip
-		on main), so the name's outline can poke left past the column's gap while the dots and
-		the big silly run off the window's edges.
+		runs to the window's edge as it does in the frame, with its outline just inside. Only the
+		page clips it (overflow-clip on main), so the name's outline can poke left past the
+		column's gap while the dots and the big silly run off the window's edges. The pointer
+		passes through it all but the name, which squashes under it.
 	-->
 	<div
 		class="pointer-events-none absolute inset-y-0 right-0 left-[599px] max-lg:hidden"
@@ -82,7 +83,7 @@
 		<div class="absolute inset-0" style:zoom="var(--art-scale, 1)">
 			<!-- The intro: the dots fade in one after another from the bottom right corner; the sillies pop in; the name slides in along its warp. -->
 			<div class="dots absolute top-[180px] right-0 bottom-0 left-[76px] {recolor}" style="color: var(--c-dots)"></div>
-			<div class="name-warp absolute top-0 -left-0.5 {recolor}" style="color: var(--c-ink)">
+			<div class="name-warp absolute top-0 -left-1 {recolor}" style="color: var(--c-ink)">
 				<NameWarp />
 			</div>
 			{@render silly?.()}
@@ -162,7 +163,7 @@
 	}
 	:global(.silly) {
 		/* The intro is the same pop, a beat after the dots start; `backwards` holds them at nothing until then and hands scale back to the rules below once done. */
-		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 300ms) backwards;
+		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 200ms) backwards;
 		transition:
 			scale var(--pop-duration) var(--pop-ease-in) var(--pop-delay),
 			opacity 0s;
