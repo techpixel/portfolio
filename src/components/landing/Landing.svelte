@@ -148,7 +148,7 @@
 
 	/*
 	 * The sillies pop in from nothing with a soft swell past full size before settling, the
-	 * small one 200ms behind: for the intro, a beat after the dots start, and again when a
+	 * small one 200ms behind: for the intro, a short beat after first paint, and again when a
 	 * hover ends. Hovering a row fades them out with the preview,
 	 * on the same clock, and collapses them once hidden so the return can grow from nothing.
 	 * Durations and curves are set inline, in index.astro.
@@ -162,8 +162,8 @@
 		}
 	}
 	:global(.silly) {
-		/* The intro is the same pop, a beat after the dots start; `backwards` holds them at nothing until then and hands scale back to the rules below once done. */
-		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 200ms) backwards;
+		/* The intro is the same pop, a short beat after first paint; `backwards` holds them at nothing until then and hands scale back to the rules below once done. */
+		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 100ms) backwards;
 		transition:
 			scale var(--pop-duration) var(--pop-ease-in) var(--pop-delay),
 			opacity 0s;
