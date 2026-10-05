@@ -68,7 +68,7 @@
 	style:--c-dots={theme?.dots ?? 'var(--color-cream)'}
 	data-active={active}
 >
-	<!-- The column settles in as one as the page lands, on the dots' clock: 95% to full size, fading in from nothing. The portrait follows from over its place, outside the group. -->
+	<!-- The column settles in as one as the page lands, from first paint: 95% to full size, fading in from nothing. The portrait follows from over its place, outside the group. -->
 	<div class="relative z-10 w-full max-w-[517px]">
 		<div bind:this={group} class="settle-in flex flex-col gap-12">
 			<Bio bind:spacer />
@@ -143,9 +143,9 @@
 		top: clamp(180px, 100% - 449px - 32px, 220px);
 	}
 
-	/* On the dot sweep's clock exactly (same start, length and curve), so the two land together. `backwards` leaves no transform behind once done. */
+	/* Starts at first paint, with the dot sweep's length and curve, so it is in by the time the sweep ends. `backwards` leaves no transform behind once done. */
 	.settle-in {
-		animation: settle-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) 150ms backwards;
+		animation: settle-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) backwards;
 	}
 	@keyframes settle-in {
 		from {
