@@ -380,3 +380,13 @@
 	}
 }
 
+/* ---- Scrollbar ---------------------------------------------------------- */
+
+/*
+ * The page scrollbar, grey on black like the rest of the page. It is a property of
+ * the root, so it is set there for any page that carries a case study. Inherited, so
+ * scroll containers inside the page match.
+ */
+html:has(.cs-page) {
+	scrollbar-color: #646464 #000; /* --cs-grey on the body's black */
+}
