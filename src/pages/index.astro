@@ -23,7 +23,8 @@ import manifestoEmblemLq from '../assets/work/emblems/manifesto-lq.webp';
 
 // Previews show in a 745×449 box that the art scaling (up to 1.5×) and sharp screens (2×)
 // can enlarge, so they go out at 2250px from the 2517px heroes, at a high quality. The
-// portrait (480px for a 160px box) is already small and goes out as is.
+// portrait goes out as is, in full tone: the bio dithers it on the client, at the screen's
+// own pixels (see Bio.svelte).
 const previewOptions = { width: 2250, format: 'webp', quality: 90 } as const;
 
 const [midnightImg, horizonsImg, manifestoImg] = await Promise.all([

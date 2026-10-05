@@ -3,6 +3,7 @@
 	import type { Project, Slug } from '../../data/work';
 	import Bio from './Bio.svelte';
 	import NameWarp from './NameWarp.svelte';
+	import Portrait from './Portrait.svelte';
 	import ProjectRow from './ProjectRow.svelte';
 
 	interface Props {
@@ -19,6 +20,11 @@
 	let { projects, previews, heroes, portrait, emblems, silly }: Props = $props();
 
 	let active = $state<Slug | null>(null);
+
+	// The column's animated group and the photo's place in it, for the portrait, which is drawn
+	// from outside the group so the intro can't resample its dither (see Portrait.svelte).
+	let group = $state<HTMLDivElement>();
+	let spacer = $state<HTMLDivElement>();
 
 	// TEMP (debugging): Alt+clicking a row pins its hover state until it's Alt+clicked again.
 	let pinned = $state<Slug | null>(null);
@@ -62,24 +68,27 @@
 	style:--c-dots={theme?.dots ?? 'var(--color-cream)'}
 	data-active={active}
 >
-	<!-- The column settles in as one as the page lands, on the dots' clock: 95% to full size, fading in from nothing. -->
-	<div class="settle-in relative z-10 flex w-full max-w-[517px] flex-col gap-12">
-		<Bio {portrait} />
-		<div class="flex flex-col gap-1">
-			<p class="text-xs leading-[normal] text-peach">Selected Work</p>
-			<ul class="flex flex-col gap-2" onmouseleave={deactivate}>
-				{#each projects as project (project.slug)}
-					<ProjectRow
-						{project}
-						emblem={emblems[project.slug]}
-						active={active === project.slug}
-						onactivate={() => activate(project.slug)}
-						ondeactivate={deactivate}
-						onpin={() => togglePin(project.slug)}
-					/>
-			{/each}
-			</ul>
+	<!-- The column settles in as one as the page lands, on the dots' clock: 95% to full size, fading in from nothing. The portrait follows from over its place, outside the group. -->
+	<div class="relative z-10 w-full max-w-[517px]">
+		<div bind:this={group} class="settle-in flex flex-col gap-12">
+			<Bio bind:spacer />
+			<div class="flex flex-col gap-1">
+				<p class="text-xs leading-[normal] text-peach">Selected Work</p>
+				<ul class="flex flex-col gap-2" onmouseleave={deactivate}>
+					{#each projects as project (project.slug)}
+						<ProjectRow
+							{project}
+							emblem={emblems[project.slug]}
+							active={active === project.slug}
+							onactivate={() => activate(project.slug)}
+							ondeactivate={deactivate}
+							onpin={() => togglePin(project.slug)}
+						/>
+					{/each}
+				</ul>
+			</div>
 		</div>
+		<Portrait {portrait} {spacer} {group} />
 	</div>
 
 	<!--
