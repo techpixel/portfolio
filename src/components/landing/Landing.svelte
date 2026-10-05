@@ -118,7 +118,7 @@
 					width="745"
 					height="449"
 					fetchpriority="low"
-					class="absolute top-[220px] left-1/2 h-[449px] w-[745px] -translate-x-1/2 object-cover {fade} {active === project.slug
+					class="preview absolute left-1/2 h-[449px] w-[745px] -translate-x-1/2 object-cover {fade} {active === project.slug
 						? 'opacity-100'
 						: 'opacity-0'}"
 				/>
@@ -128,6 +128,18 @@
 </main>
 
 <style>
+	/*
+	 * The preview sits 220px down the frame. The art is scaled to the window's width (see
+	 * Layout.astro), so on a window wider than the frame it outgrows the page's height, and
+	 * the preview, the lowest thing in it, would run off the bottom: 100% here is the page's
+	 * height in the art's pixels. So it lifts just enough to keep 32px clear of the bottom,
+	 * but no higher than the dots' first row, short of the name; on the widest windows its
+	 * bottom is trimmed instead.
+	 */
+	.preview {
+		top: clamp(180px, 100% - 449px - 32px, 220px);
+	}
+
 	/* On the dot sweep's clock exactly (same start, length and curve), so the two land together. `backwards` leaves no transform behind once done. */
 	.settle-in {
 		animation: settle-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) 150ms backwards;
