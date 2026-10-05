@@ -148,17 +148,20 @@ import event2 from '../../assets/work/midnight/event-2.webp';
 			caption="Other views, like the platform, needed to stay simple and functional. The underlying theme was still communicated through the bold color palette, sizing, and slightly funky shapes. They don’t detract from usability and functionality."
 			rows={[
 				[
+					// Both screenshots share one scale, nav bar on rows 1225–1441; the second has
+					// 55 more rows of background under it. Show rows 0–1441 of each, so the nav bars
+					// line up and sit flush with the frame's bottom.
 					{
 						src: platform1,
-						alt: 'The Midnight platform dashboard',
+						alt: 'The Midnight platform project view',
 						aspect: 483.5 / 300,
-						crop: { width: 103.01, height: 100.67, left: -1.45, top: -0.34 },
+						crop: { width: 103.27, height: 100.42, left: -1.64, top: 0 },
 					},
 					{
 						src: platform2,
-						alt: 'The Midnight platform project view',
+						alt: 'The Midnight platform dashboard',
 						aspect: 483.5 / 300,
-						crop: { width: 102.43, height: 103.33, left: -0.1, top: 1.01 },
+						crop: { width: 103.27, height: 104.23, left: -1.64, top: 0 },
 					},
 				],
 			]}

@@ -7,7 +7,12 @@ import { widthsUpTo } from '../../lib/sizes';
 export interface CaseImageProps {
 	src: ImageMetadata;
 	alt: string;
-	/** Width ÷ height of the frame. Defaults to the image's own ratio. */
+	/**
+	 * A silent clip that plays in the frame, looping, while it is on screen. The image is
+	 * its poster: it shows until the first frame paints, and stays if motion is reduced.
+	 */
+	video?: { src: string; width: number; height: number };
+	/** Width ÷ height of the frame. Defaults to the clip's, else the image's, own ratio. */
 	aspect?: number;
 	/**
 	 * Show part of the image, as Figma does: the image's size and offset within the
@@ -21,9 +26,14 @@ export interface CaseImageProps {
 
 type Props = CaseImageProps & { sizes: string; class?: string; style?: string };
 
-const { src, alt, aspect, crop, outlined, shadow, sizes, class: className, style } = Astro.props;
-const ratio = aspect ?? src.width / src.height;
+const { src, alt, video, aspect, crop, outlined, shadow, sizes, class: className, style } = Astro.props;
+const frame = video ?? src;
+const ratio = aspect ?? frame.width / frame.height;
 const blur = await placeholder(src);
+// The image and the clip fill the frame the same way.
+const place = crop
+	? `width: ${crop.width}%; height: ${crop.height}%; left: ${crop.left}%; top: ${crop.top}%`
+	: 'inset: 0; width: 100%; height: 100%';
 ---
 
 <div
@@ -43,8 +53,42 @@ const blur = await placeholder(src);
 		widths={widthsUpTo(src.width)}
 		sizes={sizes}
 		class="absolute max-w-none object-cover"
-		style={`${crop
-			? `width: ${crop.width}%; height: ${crop.height}%; left: ${crop.left}%; top: ${crop.top}%`
-			: 'inset: 0; width: 100%; height: 100%'}; ${blur ?? ''}`}
+		style={`${place}; ${blur ?? ''}`}
 	/>
+	{
+		video && (
+			<video
+				class="cs-video absolute max-w-none object-cover opacity-0 transition-opacity duration-300 data-[playing]:opacity-100"
+				style={place}
+				src={video.src}
+				muted
+				loop
+				playsinline
+				preload="none"
+				aria-hidden="true"
+			/>
+		)
+	}
 </div>
+
+<script>
+	// A clip plays only while on screen, and not at all under reduced motion. Until it
+	// plays, `preload="none"` keeps it from downloading and the image underneath stands in.
+	const clips = document.querySelectorAll<HTMLVideoElement>('video.cs-video');
+	if (clips.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					const clip = entry.target as HTMLVideoElement;
+					if (entry.isIntersecting) clip.play().catch(() => {});
+					else clip.pause();
+				}
+			},
+			{ rootMargin: '25% 0px' },
+		);
+		for (const clip of clips) {
+			clip.addEventListener('playing', () => clip.setAttribute('data-playing', ''), { once: true });
+			observer.observe(clip);
+		}
+	}
+</script>

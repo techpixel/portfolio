@@ -13,6 +13,7 @@ import landing from '../../assets/work/manifesto/landing.webp';
 import hackerManifesto from '../../assets/work/manifesto/hacker-manifesto.webp';
 import hackerManifestoMobile from '../../assets/work/manifesto/hacker-manifesto-mobile.webp';
 import hook from '../../assets/work/manifesto/hook.webp';
+import hookVideo from '../../assets/work/manifesto/hook.mp4';
 import footer from '../../assets/work/manifesto/footer.webp';
 import manifestoPage from '../../assets/work/manifesto/manifesto-page.webp';
 import manifestoPage2 from '../../assets/work/manifesto/manifesto-page-2.webp';
@@ -115,7 +116,15 @@ import note3 from '../../assets/work/manifesto/note-3.webp';
 		</Prose>
 		<Gallery
 			caption="The first few lines I used as a hook."
-			rows={[[{ src: hook, alt: 'The opening lines of the manifesto used as a hook', aspect: 2780 / 1788 }]]}
+			rows={[
+				[
+					{
+						src: hook,
+						video: { src: hookVideo, width: 2534, height: 1440 },
+						alt: 'The opening lines of the manifesto used as a hook',
+					},
+				],
+			]}
 		/>
 		<Gallery
 			caption="The last line in the manifesto, I used as the footer. It felt like a strong call to action." rows={[[{ src: footer, alt: 'The footer: “Hackers Wanted.”' }]]} />
