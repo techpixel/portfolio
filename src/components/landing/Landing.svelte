@@ -143,7 +143,7 @@
 		top: clamp(180px, 100% - 449px - 32px, 220px);
 	}
 
-	/* Starts at first paint, with the dot sweep's length and curve, so it is in by the time the sweep ends. `backwards` leaves no transform behind once done. */
+	/* Starts at first paint, on the dot sweep's curve and about its length, so the two land together. `backwards` leaves no transform behind once done. */
 	.settle-in {
 		animation: settle-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) backwards;
 	}
@@ -163,24 +163,27 @@
 	 * For the intro, a circle grows out of the bottom right corner and uncovers the dots as
 	 * it passes, through an edge about one spacing wide, so each dot fades in just after its
 	 * neighbour. The circle is a mask image pinned to that corner whose size animates, which
-	 * every browser interpolates. It ends at 142% of the element, just enough to reach its far
-	 * corner whatever the window, so the whole run is spent crossing dots. It starts a beat
-	 * after first paint so the sweep is seen.
+	 * every browser interpolates. It ends at 142% of the element plus the edge: 142% is just
+	 * enough for the circle to reach the far corner whatever the window, so the whole run is
+	 * spent crossing dots, and the extra edge width puts the soft part past the corner, so the
+	 * last dot ends up as solid as the rest. It starts a beat after first paint so the sweep
+	 * is seen.
 	 */
 	.dots {
+		--dots-edge: 36px;
 		background-image: conic-gradient(from 270deg at 5px 5px, currentColor 90deg, transparent 0);
 		background-size: 30px 30px;
-		mask-image: radial-gradient(circle farthest-side at 100% 100%, #000 calc(100% - 36px), transparent 100%);
+		mask-image: radial-gradient(circle farthest-side at 100% 100%, #000 calc(100% - var(--dots-edge)), transparent 100%);
 		mask-repeat: no-repeat;
 		mask-position: 100% 100%;
-		animation: dots-in 1.6s cubic-bezier(0.25, 1, 0.5, 1) 150ms both;
+		animation: dots-in 1.55s cubic-bezier(0.25, 1, 0.5, 1) 100ms both;
 	}
 	@keyframes -global-dots-in {
 		from {
 			mask-size: 0% 0%;
 		}
 		to {
-			mask-size: 142% 142%;
+			mask-size: calc(142% + var(--dots-edge)) calc(142% + var(--dots-edge));
 		}
 	}
 
