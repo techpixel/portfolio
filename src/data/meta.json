@@ -9,35 +9,35 @@
 	},
 	"pages": {
 		"/": {
-			"title": "Manitej",
+			"title": "Manitej Boorgu",
 			"description": "Programmer and designer studying Computer Science at Purdue University.",
 			"image": "og.png",
 			"imageAlt": "Manitej",
 			"type": "website"
 		},
 		"/work/midnight": {
-			"title": "Hack Club’s Midnight · Manitej",
+			"title": "Hack Club’s Midnight · Manitej Boorgu",
 			"description": "Branding & UI/UX for a hackathon in Vienna.",
 			"image": "work/midnight/hero.webp",
 			"imageAlt": "The Midnight landing page beside its logo and a printed booklet",
 			"type": "article"
 		},
 		"/work/horizons": {
-			"title": "Hack Club’s Horizons · Manitej",
+			"title": "Hack Club’s Horizons · Manitej Boorgu",
 			"description": "Branding & UI/UX for a collection of hackathons across the world",
 			"image": "work/horizons/hero.webp",
 			"imageAlt": "The Horizons landing page beside its logo and a printed postcard",
 			"type": "article"
 		},
 		"/work/manifesto": {
-			"title": "Hack Club’s Manifesto · Manitej",
+			"title": "Hack Club’s Manifesto · Manitej Boorgu",
 			"description": "Branding & UI for the Hack Club Gap Year application.",
 			"image": "work/manifesto/hero.webp",
 			"imageAlt": "The Manifesto landing page: a collage of gap year photos beside “hackers wanted.”",
 			"type": "article"
 		},
 		"/404": {
-			"title": "Not found · Manitej",
+			"title": "Not found · Manitej Boorgu",
 			"description": "This page doesn’t exist, or it moved.",
 			"noindex": true
 		}
