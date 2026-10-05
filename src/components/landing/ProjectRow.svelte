@@ -133,6 +133,7 @@
 
 	<a
 		href="/work/{project.slug}"
+		data-astro-prefetch
 		class="flex h-[30px] items-baseline gap-[10px] font-display text-2xl leading-[normal] whitespace-nowrap {colorFade}"
 		style:color={active ? project.theme.onBar : '#ffffff'}
 		onmouseenter={onactivate}

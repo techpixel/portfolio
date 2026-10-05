@@ -8,19 +8,33 @@
 	interface Props {
 		projects: Project[];
 		previews: Record<Slug, { src: string; style?: string }>;
+		/** Each case study's hero as its page serves it, fetched when its row is hovered. */
+		heroes: Record<Slug, { srcset: string; sizes: string }>;
 		portrait: string;
 		emblems: Record<Slug, { hq: string; lq: string }>;
 		/** Static art slotted in from Astro: the sillies with their faces. */
 		silly?: Snippet;
 	}
 
-	let { projects, previews, portrait, emblems, silly }: Props = $props();
+	let { projects, previews, heroes, portrait, emblems, silly }: Props = $props();
 
 	let active = $state<Slug | null>(null);
 
 	// TEMP (debugging): Alt+clicking a row pins its hover state until it's Alt+clicked again.
 	let pinned = $state<Slug | null>(null);
+	// Hovering a row is the surest hint its case study is next, so fetch the hero that page
+	// shows, through the page's own srcset and sizes so the browser picks the same file and
+	// then has it in cache on arrival.
+	const warmed = new Set<Slug>();
+	const warm = (slug: Slug) => {
+		if (warmed.has(slug)) return;
+		warmed.add(slug);
+		const img = new Image();
+		img.sizes = heroes[slug].sizes;
+		img.srcset = heroes[slug].srcset;
+	};
 	const activate = (slug: Slug) => {
+		warm(slug);
 		if (!pinned) active = slug;
 	};
 	const deactivate = () => {

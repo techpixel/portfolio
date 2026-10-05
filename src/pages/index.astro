@@ -13,6 +13,7 @@ import portrait from '../assets/portrait.webp';
 import midnightPreview from '../assets/work/midnight/hero.webp';
 import horizonsPreview from '../assets/work/horizons/hero.webp';
 import manifestoPreview from '../assets/work/manifesto/hero.webp';
+import { HERO_SIZES, heroSrcset } from '../lib/hero';
 import midnightEmblem from '../assets/work/emblems/midnight-hq.webp';
 import midnightEmblemLq from '../assets/work/emblems/midnight-lq.webp';
 import horizonsEmblem from '../assets/work/emblems/horizons-hq.webp';
@@ -37,6 +38,14 @@ const previews = {
 	manifesto: { src: manifestoImg.src, style: await placeholder(manifestoPreview) },
 };
 
+// The heroes the rows link to, so hovering a row can fetch the very file its case study
+// will show (the page shares HERO_SIZES and the candidates with us).
+const heroes = {
+	midnight: { srcset: await heroSrcset(midnightPreview), sizes: HERO_SIZES },
+	horizons: { srcset: await heroSrcset(horizonsPreview), sizes: HERO_SIZES },
+	manifesto: { srcset: await heroSrcset(manifestoPreview), sizes: HERO_SIZES },
+};
+
 // The sillies' motion: each pops in from nothing with a swell past full size (about 7%) before
 // settling, the small one 200ms behind and a touch quicker, both for the intro and when coming
 // back after a hover.
@@ -55,7 +64,7 @@ const emblems = {
 ---
 
 <Layout>
-	<Landing client:load {projects} {previews} portrait={portrait.src} {emblems}>
+	<Landing client:load {projects} {previews} {heroes} portrait={portrait.src} {emblems}>
 		<!--
 			Two sillies, each grouped with its face so the pair scales as one, at the design's
 			coordinates within the art area. Each group box is the pair's bounds, so scaling pivots

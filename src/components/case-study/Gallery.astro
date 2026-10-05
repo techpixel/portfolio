@@ -1,5 +1,6 @@
 ---
 import CaseImage, { type CaseImageProps } from './CaseImage.astro';
+import { zoomed } from '../../lib/sizes';
 
 interface Props {
 	/** Each row's images share one height and fill the column's width together. */
@@ -29,7 +30,7 @@ const zoom = (image: CaseImageProps) => (image.crop ? image.crop.width / 100 : 1
 						<CaseImage
 							{...image}
 							style={`flex: ${ratioOf(image)} 1 0%`}
-							sizes={`(min-width: 769px) ${Math.round((width * ratioOf(image) * zoom(image)) / total)}px, ${Math.round(100 * zoom(image))}vw`}
+							sizes={`(min-width: 769px) ${zoomed(Math.round((width * ratioOf(image) * zoom(image)) / total))}, ${Math.round(100 * zoom(image))}vw`}
 						/>
 					))}
 				</div>
