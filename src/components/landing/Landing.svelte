@@ -109,7 +109,10 @@
 			<div class="name-warp absolute top-0 -left-1 {recolor}" style="color: var(--c-ink)">
 				<NameWarp />
 			</div>
-			{@render silly?.()}
+			<!-- The sillies fade as one group, so where they overlap, and where each face sits on its silly, nothing shows through mid-fade. -->
+			<div class="sillies absolute inset-0 {fade} {active ? 'opacity-0' : 'opacity-100'}">
+				{@render silly?.()}
+			</div>
 			{#each projects as project (project.slug)}
 				<img
 					src={previews[project.slug].src}
@@ -182,11 +185,11 @@
 	}
 
 	/*
-	 * The sillies pop in from nothing with a soft swell past full size before settling, the
-	 * small one 200ms behind: for the intro, a short beat after first paint, and again when a
-	 * hover ends. Hovering a row fades them out with the preview,
-	 * on the same clock, and collapses them once hidden so the return can grow from nothing.
-	 * Durations and curves are set inline, in index.astro.
+	 * For the intro, the sillies pop in from nothing with a soft swell past full size before
+	 * settling, the small one 200ms behind, a short beat after first paint. Durations and
+	 * curves are set inline, in index.astro. Hover is handled on their wrapper in the markup
+	 * above: it fades out with the preview and back in when the hover ends, on the same clock,
+	 * no pop, their scale staying put.
 	 */
 	@keyframes -global-pop-in {
 		from {
@@ -197,18 +200,8 @@
 		}
 	}
 	:global(.silly) {
-		/* The intro is the same pop, a short beat after first paint; `backwards` holds them at nothing until then and hands scale back to the rules below once done. */
+		/* `backwards` holds them at nothing until the intro's delay is up; once the pop is done, scale is simply 1. */
 		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 100ms) backwards;
-		transition:
-			scale var(--pop-duration) var(--pop-ease-in) var(--pop-delay),
-			opacity 0s;
-	}
-	main[data-active] :global(.silly) {
-		opacity: 0;
-		scale: 0;
-		transition:
-			opacity 320ms ease-out,
-			scale 0s 320ms;
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.dots,
@@ -218,9 +211,6 @@
 		}
 		.dots {
 			mask-image: none;
-		}
-		:global(.silly) {
-			transition: none;
 		}
 	}
 </style>
