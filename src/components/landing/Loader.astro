@@ -11,6 +11,7 @@
  * (html.revisit, from index.astro's head script). Without JavaScript it never shows.
  */
 import SillyOutline from '../../assets/landing/silly-outline.svg';
+import Line from '../../assets/landing/give-it-a-second.svg';
 import face from '../../assets/landing/face.svg?url';
 ---
 
@@ -20,7 +21,8 @@ import face from '../../assets/landing/face.svg?url';
 			<div class="loader-shape"><SillyOutline /></div>
 			<img src={face} alt="" width="150" height="166" class="loader-face" />
 		</div>
-		<p class="loader-text">give it a second...</p>
+		<!-- The line as paths (see the asset), so it is there whether or not its face has loaded. -->
+		<Line class="loader-line" role="img" aria-label="give it a second..." />
 	</div>
 </div>
 
@@ -107,12 +109,9 @@ import face from '../../assets/landing/face.svg?url';
 		transform: rotate(172.51deg) scaleY(-1);
 	}
 
-	.loader-text {
-		font-family: var(--font-sans);
-		font-size: 16px;
-		line-height: normal;
-		letter-spacing: -0.8px;
-		white-space: nowrap;
+	.loader-content > :global(.loader-line) {
+		display: block;
+		flex: none;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
