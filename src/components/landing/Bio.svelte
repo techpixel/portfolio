@@ -1,17 +1,10 @@
 <script lang="ts">
-	interface Props {
-		/** The photo's place: an empty box, for Portrait.svelte to draw the photo over from outside the column's intro. */
-		spacer?: HTMLDivElement;
-	}
-
-	let { spacer = $bindable() }: Props = $props();
-
 	const fade = 'transition-colors duration-320 ease-out motion-reduce:transition-none';
 </script>
 
 <section class="flex flex-col gap-5">
-	<!-- 160px on desktop, 120px on phones, as in the two Figma frames. -->
-	<div bind:this={spacer} class="size-30 sm:size-40" aria-hidden="true"></div>
+	<!-- The photo's place: 160px on desktop, 120px on phones, as in the two Figma frames. An empty box, which the portrait is drawn over from outside the column's intro (see Portrait.svelte). -->
+	<div data-portrait-place class="size-30 sm:size-40" aria-hidden="true"></div>
 	<div class="flex flex-col gap-[1lh] text-xs leading-[normal] sm:text-base {fade}" style:color="var(--c-ink)">
 		<p>
 			My name is Manitej Boorgu. I’m a programmer and designer making atypical and bold visual

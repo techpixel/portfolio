@@ -58,7 +58,9 @@
 	let startStretch = $state(1);
 
 	onMount(() => {
-		const faces = [`400 ${REST_SIZE}px "Familjen Grotesk"`, `700 ${REST_SIZE}px "Familjen Grotesk"`];
+		// The face by its stack as Astro writes it on the root (its family names carry a hash).
+		const family = getComputedStyle(document.documentElement).getPropertyValue('--font-familjen').trim();
+		const faces = [`400 ${REST_SIZE}px ${family}`, `700 ${REST_SIZE}px ${family}`];
 		Promise.all(faces.map((face) => document.fonts.load(face))).then(() => {
 			const ctx = document.createElement('canvas').getContext('2d');
 			if (!ctx) return;

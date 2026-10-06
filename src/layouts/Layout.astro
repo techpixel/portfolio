@@ -1,5 +1,5 @@
 ---
-import { getImage } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
 import '../styles/global.css';
 import { Retune } from 'retune';
 import Analytics from '@vercel/analytics/astro';
@@ -32,6 +32,19 @@ const wide = image ? image.width / image.height > 1.3 : false;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--
+			The page is black before its stylesheet arrives too, so neither a load nor a navigation
+			shows a white page first: the browser paints a dark canvas as soon as it reads the
+			colour scheme (Chrome and Safari both use it for the page's background before the first
+			paint), and the root is black from the moment this style is parsed. Both sit ahead of
+			every stylesheet so nothing can paint before them.
+		-->
+		<meta name="color-scheme" content="dark" />
+		<style is:inline>
+			html {
+				background: #000;
+			}
+		</style>
 		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 		<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -63,12 +76,9 @@ const wide = image ? image.width / image.height > 1.3 : false;
 		<meta name="twitter:description" content={description} />
 		{previewUrl && <meta name="twitter:image" content={previewUrl} />}
 		{previewUrl && imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap"
-		/>
+		<!-- The site's faces (see astro.config.mjs): their @font-face rules, and a preload for each file. -->
+		<Font cssVariable="--font-schibsted" preload />
+		<Font cssVariable="--font-familjen" preload />
 		<slot name="head" />
 		<script is:inline>
 			// Past the 1440×888 screen the landing was drawn for, scale the whole page up so it

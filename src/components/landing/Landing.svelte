@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import type { Project, Slug } from '../../data/work';
 	import Bio from './Bio.svelte';
 	import NameWarp from './NameWarp.svelte';
@@ -15,16 +15,68 @@
 		emblems: Record<Slug, { hq: string; lq: string }>;
 		/** Static art slotted in from Astro: the sillies with their faces. */
 		silly?: Snippet;
+		/** The loading screen, slotted in from Astro (Loader.astro). */
+		loader?: Snippet;
 	}
 
-	let { projects, previews, heroes, portrait, emblems, silly }: Props = $props();
+	let { projects, previews, heroes, portrait, emblems, silly, loader }: Props = $props();
 
 	let active = $state<Slug | null>(null);
 
-	// The column's animated group and the photo's place in it, for the portrait, which is drawn
-	// from outside the group so the intro can't resample its dither (see Portrait.svelte).
-	let group = $state<HTMLDivElement>();
-	let spacer = $state<HTMLDivElement>();
+	/*
+	 * The loading screen covers the page from first paint and lifts, with html.ready, once the
+	 * first view is whole: the faces are in, the photo is dithered (Portrait.svelte says when)
+	 * and the pictures that are drawn have loaded (hidden ones, as the art on phones, load in
+	 * their own time). The intro starts as it lifts: the CSS animations hold their first frame
+	 * until then (below), and the name's slide and the photo follow `intro`, which tracks the
+	 * class, since the screen's own clock can lift it too (Loader.astro).
+	 */
+	let intro = $state(false);
+	let main = $state<HTMLElement>();
+	let resolvePortrait: () => void;
+	const portraitReady = new Promise<void>((resolve) => (resolvePortrait = resolve));
+	const portraitDrawn = () => resolvePortrait();
+
+	onMount(() => {
+		const root = document.documentElement;
+		const follow = () => {
+			if (!root.classList.contains('ready')) return;
+			intro = true;
+			observer.disconnect();
+		};
+		const observer = new MutationObserver(follow);
+		observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+		follow();
+
+		const pictures = [...main!.querySelectorAll('img')]
+			.filter((img) => img.loading !== 'lazy' && img.getClientRects().length > 0)
+			.map((img) =>
+				img.complete
+					? Promise.resolve()
+					: new Promise<void>((resolve) => {
+							img.addEventListener('load', () => resolve(), { once: true });
+							img.addEventListener('error', () => resolve(), { once: true });
+						}),
+			);
+		// The faces the first view sets, asked for by name as well as waited on: `fonts.ready` can
+		// settle before layout has asked for them.
+		const stack = (variable: string) => getComputedStyle(root).getPropertyValue(variable).trim();
+		const faces = [`400 16px ${stack('--font-schibsted')}`, `400 24px ${stack('--font-familjen')}`, `700 24px ${stack('--font-familjen')}`];
+		const fonts = faces.map((face) => document.fonts.load(face).catch(() => {}));
+		Promise.all([...fonts, document.fonts.ready, portraitReady, ...pictures]).then(async () => {
+			// The screen's content appears a beat after first paint (Loader.astro), a longer one
+			// back from a case study, when everything should be in cache (html.revisit, set in
+			// index.astro). Once seen, it stays long enough to be read rather than flicker.
+			const APPEARS = root.classList.contains('revisit') ? 600 : 150;
+			const STAYS = 500;
+			const shown = (performance.getEntriesByType('paint')[0]?.startTime ?? 0) + APPEARS;
+			const now = performance.now();
+			if (now > shown && now < shown + STAYS) await new Promise((resolve) => setTimeout(resolve, shown + STAYS - now));
+			root.classList.add('ready');
+		});
+
+		return () => observer.disconnect();
+	});
 
 	// TEMP (debugging): Alt+clicking a row pins its hover state until it's Alt+clicked again.
 	let pinned = $state<Slug | null>(null);
@@ -61,6 +113,7 @@
 </script>
 
 <main
+	bind:this={main}
 	class="relative flex min-h-[var(--page-height,100dvh)] items-center overflow-clip px-4 py-12 sm:px-6 lg:pl-12"
 	style:--c-ink={theme?.ink ?? 'var(--color-cream)'}
 	style:--c-link={theme?.link ?? 'var(--color-cream)'}
@@ -68,10 +121,10 @@
 	style:--c-dots={theme?.dots ?? 'var(--color-cream)'}
 	data-active={active}
 >
-	<!-- The column settles in as one as the page lands, from first paint: 95% to full size, fading in from nothing. The portrait follows from over its place, outside the group. -->
+	<!-- The column settles in as one as the page lands: 95% to full size, fading in from nothing. The portrait follows from over its place, outside the group (data-intro, for src/lib/portrait.ts). -->
 	<div class="relative z-10 w-full max-w-[517px]">
-		<div bind:this={group} class="settle-in flex flex-col gap-12">
-			<Bio bind:spacer />
+		<div data-intro class="settle-in flex flex-col gap-12">
+			<Bio />
 			<div class="flex flex-col gap-1">
 				<p class="text-xs leading-[normal] text-peach">Selected Work</p>
 				<ul class="flex flex-col gap-2" onmouseleave={deactivate}>
@@ -88,7 +141,7 @@
 				</ul>
 			</div>
 		</div>
-		<Portrait {portrait} {spacer} {group} />
+		<Portrait {portrait} {intro} onready={portraitDrawn} />
 	</div>
 
 	<!--
@@ -107,7 +160,7 @@
 			<!-- The intro: the dots fade in one after another from the bottom right corner; the sillies pop in; the name slides in along its warp. -->
 			<div class="dots absolute top-[180px] right-0 bottom-0 left-[76px] {recolor}" style="color: var(--c-dots)"></div>
 			<div class="name-warp absolute top-0 -left-1 {recolor}" style="color: var(--c-ink)">
-				<NameWarp />
+				<NameWarp {intro} />
 			</div>
 			<!-- The sillies fade as one group, so where they overlap, and where each face sits on its silly, nothing shows through mid-fade. -->
 			<div class="sillies absolute inset-0 {fade} {active ? 'opacity-0' : 'opacity-100'}">
@@ -129,6 +182,9 @@
 		</div>
 	</div>
 </main>
+
+<!-- The loading screen, over the page until html.ready (see above and Loader.astro). -->
+{@render loader?.()}
 
 <style>
 	/*
@@ -205,6 +261,17 @@
 	:global(.silly) {
 		/* `backwards` holds them at nothing until the intro's delay is up; once the pop is done, scale is simply 1. */
 		animation: pop-in var(--pop-duration) var(--pop-ease-in) calc(var(--pop-delay) + 100ms) backwards;
+	}
+	/*
+	 * Under the loading screen the intro holds at its first frame (the column at nothing, the
+	 * dots covered, the sillies at nothing) and sets off together when the screen lifts
+	 * (html.ready, see the script). Only with scripts: without, there is no screen, and it
+	 * runs from first paint as before.
+	 */
+	:global(html.js:not(.ready)) .settle-in,
+	:global(html.js:not(.ready)) .dots,
+	:global(html.js:not(.ready) .silly) {
+		animation-play-state: paused;
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.dots,

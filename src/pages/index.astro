@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Landing from '../components/landing/Landing.svelte';
+import Loader from '../components/landing/Loader.astro';
 import { projects } from '../data/work';
 import { placeholder } from '../lib/placeholder';
 import { cubicBezierCss, type Bezier } from '../lib/easing';
@@ -65,7 +66,28 @@ const emblems = {
 ---
 
 <Layout>
+	<!-- The photo sets off with the stylesheet, so its dither can be drawn as the page lands. -->
+	<link slot="head" rel="preload" as="image" href={portrait.src} fetchpriority="high" />
+	<script is:inline slot="head">
+		// The loading screen (Loader.astro) covers the landing while it loads; Landing.svelte lifts
+		// it once everything is in, and after 12s it lifts regardless. Its content shows a beat
+		// after first paint on the landing's first load in a tab, and on reloads. Back from a case
+		// study everything should be in cache, so the page is simply black for the few frames it
+		// takes, and the content shows only if that takes too long (html.revisit).
+		(() => {
+			let seen = false;
+			try {
+				seen = sessionStorage.getItem('landing') === 'seen';
+				sessionStorage.setItem('landing', 'seen');
+			} catch {}
+			const reload = performance.getEntriesByType('navigation')[0]?.type === 'reload';
+			if (seen && !reload) document.documentElement.classList.add('revisit');
+			setTimeout(() => document.documentElement.classList.add('ready'), 12000);
+		})();
+	</script>
 	<Landing client:load {projects} {previews} {heroes} portrait={portrait.src} {emblems}>
+		<!-- The loading screen, over everything until the landing has what it needs (see Loader.astro). -->
+		<Fragment slot="loader"><Loader /></Fragment>
 		<!--
 			Two sillies, each grouped with its face so the pair scales as one, at the design's
 			coordinates within the art area. Each group box is the pair's bounds, so scaling pivots
@@ -103,3 +125,10 @@ const emblems = {
 		</Fragment>
 	</Landing>
 </Layout>
+
+<script>
+	// The photo, dithered in its place from the first frames, well before the landing's island
+	// hydrates and adopts the drawing (see src/lib/portrait.ts).
+	import { startPagePortrait } from '../lib/portrait';
+	startPagePortrait();
+</script>

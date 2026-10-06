@@ -6,6 +6,13 @@
 	import svg from '../../assets/landing/name-warp.svg?raw';
 	import { cubicBezier } from '../../lib/easing';
 
+	interface Props {
+		/** The intro has set off (the loading screen lifted, see Landing.svelte): the slide starts on it. */
+		intro?: boolean;
+	}
+
+	let { intro = false }: Props = $props();
+
 	// The glyph outlines and the box they were drawn in, read from the asset so it stays the source.
 	const d = /<path id="name-warp-glyphs" d="([^"]+)"/.exec(svg)![1];
 	const [, width, height] = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svg)!;
@@ -148,6 +155,8 @@
 	};
 	/** Redraws the mark for the slide so far and a squash amount. Set once warpjs is up; absent under reduced motion, so hovering then does nothing. */
 	let draw: ((q: number) => void) | undefined;
+	/** Starts the slide. Set once warpjs is up; absent under reduced motion, where the mark simply shows. */
+	let begin: (() => void) | undefined;
 	$effect(() => {
 		// Read first: with `draw` not yet set, `draw?.(squash.current)` would skip the read and never follow the spring.
 		const q = squash.current;
@@ -195,11 +204,18 @@
 			ready = true;
 			if (t < 1) raf = requestAnimationFrame(frame);
 		};
-		raf = requestAnimationFrame(frame);
+		// The slide waits for the intro's cue (below); once it has run, the cue is spent.
+		begin = () => {
+			if (!raf) raf = requestAnimationFrame(frame);
+		};
 		return () => {
 			cancelAnimationFrame(raf);
 			draw = undefined;
+			begin = undefined;
 		};
+	});
+	$effect(() => {
+		if (intro) begin?.();
 	});
 </script>
 
