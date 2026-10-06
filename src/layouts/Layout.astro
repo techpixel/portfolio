@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import '../styles/global.css';
 import { Retune } from 'retune';
+import Analytics from '@vercel/analytics/astro';
 import { metaImage, pageMeta, site } from '../lib/meta';
 
 // Titles, descriptions and social previews come from src/data/meta.json, by URL. The
@@ -92,5 +93,6 @@ const wide = image ? image.width / image.height > 1.3 : false;
 	<body>
 		<slot />
 		{import.meta.env.DEV && <Retune client:only="react" />}
+		<Analytics />
 	</body>
 </html>
