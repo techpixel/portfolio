@@ -150,10 +150,11 @@
 		runs to the window's edge as it does in the frame, with its outline just inside. Only the
 		page clips it (overflow-clip on main), so the name's outline can poke left past the
 		column's gap while the dots and the big silly run off the window's edges. The pointer
-		passes through it all but the name, which squashes under it.
+		passes through it all but the name, which squashes under it, and none of it can be selected, so a
+		drag across the page never lights up the faces or the previews.
 	-->
 	<div
-		class="pointer-events-none absolute inset-y-0 right-0 left-[599px] max-lg:hidden"
+		class="pointer-events-none absolute inset-y-0 right-0 left-[599px] select-none max-lg:hidden"
 		aria-hidden="true"
 	>
 		<div class="absolute inset-0" style:zoom="var(--art-scale, 1)">

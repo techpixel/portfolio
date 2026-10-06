@@ -19,7 +19,7 @@ import face from '../../assets/landing/face.svg?url';
 	<div class="loader-content">
 		<div class="loader-silly" aria-hidden="true">
 			<div class="loader-shape"><SillyOutline /></div>
-			<img src={face} alt="" width="150" height="166" class="loader-face" />
+			<img src={face} alt="" width="150" height="166" draggable="false" class="loader-face" />
 		</div>
 		<!-- The line as paths (see the asset), so it is there whether or not its face has loaded. -->
 		<Line class="loader-line" role="img" aria-label="give it a second..." />
@@ -31,6 +31,7 @@ import face from '../../assets/landing/face.svg?url';
 		position: fixed;
 		inset: 0;
 		z-index: 50;
+		user-select: none;
 		display: flex;
 		align-items: center;
 		justify-content: center;
