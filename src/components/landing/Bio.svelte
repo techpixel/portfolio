@@ -7,8 +7,7 @@
 	<div data-portrait-place class="size-30 sm:size-40" aria-hidden="true"></div>
 	<div class="flex flex-col gap-[1lh] text-xs leading-[normal] sm:text-base {fade}" style:color="var(--c-ink)">
 		<p>
-			My name is Manitej Boorgu. I’m a programmer and designer making atypical and bold visual
-			work. Nothing about my craft is normal.
+			My name is Manitej Boorgu. I’m a programmer and designer who enjoys making interesting websites and visual identities.
 		</p>
 		<p>I’m probably at a Starbucks while you’re reading this.</p>
 		<p>
